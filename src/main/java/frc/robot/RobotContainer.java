@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AimAtGoal;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -92,6 +93,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     driverController.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+
+    driverController.x().whileTrue(new AimAtGoal(drivebase,driverController));
   }
 
   /**

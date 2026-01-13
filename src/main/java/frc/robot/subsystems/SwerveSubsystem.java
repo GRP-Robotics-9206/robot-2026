@@ -170,11 +170,15 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     //Preload PathPlanner Path finding
-    // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE:;;
+    // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE:
     CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
   }
 
   public void setupVision() {
     vision = new Vision();
+  }
+
+  public Vision getVision() {
+    return vision;
   }
 }

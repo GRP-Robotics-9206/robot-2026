@@ -39,9 +39,9 @@ public class Vision {
     }
 
     public static class Camera {
-        private final Transform3d robotToCamera;
-        private final PhotonCamera camera;
-        private final PhotonPoseEstimator estimator;
+        public final Transform3d robotToCamera;
+        public final PhotonCamera camera;
+        public final PhotonPoseEstimator estimator;
 
         public Camera(String name, Transform3d robotToCamera) {
             this.robotToCamera = robotToCamera;
