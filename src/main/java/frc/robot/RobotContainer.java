@@ -5,9 +5,8 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AimAtGoal;
-import frc.robot.subsystems.SwerveSubsystem;
-import swervelib.SwerveInputStream;
+import frc.robot.commands.TeleopDrive;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -27,12 +26,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  
-  // create a new swerve subsystem object
-  public final SwerveSubsystem drivebase = new SwerveSubsystem();
+  private final SwerveSubsystem drivebase = new SwerveSubsystem();
 
   // auto chooser
-  private final SendableChooser<Command> autoChooser; 
+  //private final SendableChooser<Command> autoChooser; 
 
   // create an object for our driver controller
   private final CommandXboxController driverController = new CommandXboxController(Constants.OperatorConstants.kDriverControllerPort);
@@ -46,41 +43,11 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
-    // Setup Swerve
-    drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-
     // Setup pathplaner auto chooser
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+    //autoChooser = AutoBuilder.buildAutoChooser();
+    //SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
-  
-  // left stick controls the translation of the robot
-  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(
-    drivebase.getSwerveDrive(), 
-    () -> driverController.getLeftY() * -1,
-    () -> driverController.getLeftX() * -1
-  )
-    .withControllerRotationAxis(driverController::getRightX)
-    .deadband(OperatorConstants.DEADBAND)
-    .scaleTranslation(OperatorConstants.TRANSLATION_SCALE)
-    .scaleRotation(-OperatorConstants.ROTATION_SCALE)
-    .allianceRelativeControl(true);
-
-  // For the right stick to correspond to the angle we want the robot to face instead of the speed of rotationa
-  SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(
-    driverController::getRightX,
-    driverController::getRightY
-  )
-    .headingWhile(true);
-  
-
-  // create a new command that calls the driveCommand that we made in the swerveSubsystem
-  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
-
-  // Same thing but for direct angle rather than angular velocity
-  Command driveFieldOrientedDirectAngle     = drivebase.driveFieldOriented(driveDirectAngle);
-  
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -92,9 +59,17 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverController.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+    // Drivebase default command
+    drivebase.setDefaultCommand(
+      new TeleopDrive(  
+        drivebase,
+        () -> driverController.getLeftY(),
+        () -> driverController.getLeftX(),
+        () -> driverController.getRightX()
+      )
+    );
 
-    driverController.x().whileTrue(new AimAtGoal(drivebase,driverController));
+    driverController.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
   }
 
   /**
@@ -102,11 +77,17 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
+  /*
    public Command getPathPlannerAuto() {
     return autoChooser.getSelected();
   }
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
+  }
+  */
+  
+  public SwerveSubsystem getDrivebase() {
+    return drivebase;
   }
 }

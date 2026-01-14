@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
 
   private void updateSmartDashboard() {
     //get swerve from subsystem and calc velocity 
-    var swerve = m_robotContainer.drivebase.getSwerveDrive();
+    var swerve = m_robotContainer.getDrivebase();
     var vel = Math.hypot(swerve.getRobotVelocity().vxMetersPerSecond, swerve.getRobotVelocity().vyMetersPerSecond); 
 
     SmartDashboard.putNumber("CAN Utilization %", RobotController.getCANStatus().percentBusUtilization * 100.0);
@@ -83,12 +83,14 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    /*
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
+    */
   }
 
   /** This function is called periodically during autonomous. */
