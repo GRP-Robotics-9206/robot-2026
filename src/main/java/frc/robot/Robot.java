@@ -58,19 +58,19 @@ public class Robot extends TimedRobot {
 
   private void updateSmartDashboard() {
     //get swerve from subsystem and calc velocity 
-    var swerve = m_robotContainer.drivebase.getSwerveDrive();
-    var vel = Math.hypot(swerve.getRobotVelocity().vxMetersPerSecond, swerve.getRobotVelocity().vyMetersPerSecond); 
+    //var swerve = m_robotContainer.drivebase.getSwerveDrive();
+    //var vel = Math.hypot(swerve.getRobotVelocity().vxMetersPerSecond, swerve.getRobotVelocity().vyMetersPerSecond); 
 
     SmartDashboard.putNumber("CAN Utilization %", RobotController.getCANStatus().percentBusUtilization * 100.0);
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
     SmartDashboard.putNumber("CPU Temperature", RobotController.getCPUTemp());
     SmartDashboard.putBoolean("RSL", RobotController.getRSLState());
     SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
-    SmartDashboard.putNumber("Robot Velocity", vel);
+    //SmartDashboard.putNumber("Robot Velocity", vel);
 
     // Update Field2d pose
-    var robotPose = swerve.getPose();
-    m_field.setRobotPose(robotPose);
+    //var robotPose = swerve.getPose();
+    //m_field.setRobotPose(robotPose);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
