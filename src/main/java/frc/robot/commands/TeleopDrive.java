@@ -2,9 +2,11 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
+import swervelib.SwerveInputStream;
+
 import java.util.function.DoubleSupplier;
-import yams.mechanisms.swerve.utility.SwerveInputStream;
 
 public class TeleopDrive extends Command {
   private final SwerveSubsystem m_subsystem;
@@ -29,7 +31,16 @@ public class TeleopDrive extends Command {
 
     // Use the existing helper in your subsystem to create the stream
     // This applies your deadbands and alliance-relative logic
-    this.m_inputStream = subsystem.getChassisSpeedsSupplier(xSupplier, ySupplier, omegaSupplier);
+    this.m_inputStream = SwerveInputStream.of(
+      m_subsystem.getSwerveDrive(), 
+      xSupplier,
+      ySupplier
+    )
+      .withControllerRotationAxis(omegaSupplier)
+      .deadband(OperatorConstants.DEADBAND)
+      .scaleTranslation(OperatorConstants.TRANSLATION_SCALE)
+      .scaleRotation(-OperatorConstants.ROTATION_SCALE)
+      .allianceRelativeControl(true);
 
     // Add the subsystem as a requirement so no other command can use it simultaneously
     addRequirements(subsystem);
@@ -42,7 +53,7 @@ public class TeleopDrive extends Command {
 
     // 2. Pass them to your subsystem's setter
     // Your subsystem setter handles optimization and motor output
-    m_subsystem.drive(() -> speeds).execute();
+    m_subsystem.driveFieldOriented(speeds);
   }
 
   @Override

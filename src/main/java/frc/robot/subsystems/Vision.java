@@ -2,16 +2,11 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.Vision.*;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Robot;
-import yams.mechanisms.swerve.SwerveDrive;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +18,8 @@ import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import swervelib.SwerveDrive;
+import swervelib.telemetry.SwerveDriveTelemetry;
 
 public class Vision {
     public VisionSystemSim visionSim;
@@ -126,8 +123,8 @@ public class Vision {
     }
 
     public void updatePoseEst(SwerveDrive swerve) {
-        if (RobotBase.isSimulation()) {
-            visionSim.update(swerve.getPose());
+        if (SwerveDriveTelemetry.isSimulation && swerve.getSimulationDriveTrainPose().isPresent()) {
+            visionSim.update(swerve.getSimulationDriveTrainPose().get());
         }
 
         arducam.addVisionMeasurementToSwerve(swerve);

@@ -1,189 +1,143 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
-import static edu.wpi.first.units.Units.*;
+import java.io.File;
+import java.util.function.Supplier;
 
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import edu.wpi.first.math.controller.PIDController;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.wpilibj.AnalogEncoder;
+
+import static edu.wpi.first.units.Units.Meter;
+
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-import yams.gearing.MechanismGearing;
-import yams.mechanisms.config.SwerveDriveConfig;
-import yams.mechanisms.config.SwerveModuleConfig;
-import yams.mechanisms.swerve.SwerveDrive;
-import yams.mechanisms.swerve.SwerveModule;
-import yams.mechanisms.swerve.utility.SwerveInputStream;
-import yams.motorcontrollers.SmartMotorController;
-import yams.motorcontrollers.SmartMotorControllerConfig;
-import yams.motorcontrollers.local.SparkWrapper;
-import frc.robot.Constants;
-import frc.robot.SwerveConstants.*;
-import frc.robot.SwerveConstants.SwerveModules.*;
+import edu.wpi.first.wpilibj.Filesystem;
+import swervelib.parser.SwerveParser;
+import swervelib.SwerveDrive;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
-public class SwerveSubsystem extends SubsystemBase
-{
-  private AngularVelocity          maximumChassisSpeedsAngularVelocity = DegreesPerSecond.of(720);
-  private LinearVelocity           maximumChassisSpeedsLinearVelocity  = MetersPerSecond.of(4);
+public class SwerveSubsystem extends SubsystemBase {
 
-  private final SwerveDrive drive;
-  private final Field2d field = new Field2d();
+  // declare the configuration directory
+  File directory = new File(Filesystem.getDeployDirectory(),"swerve");
+
+  // create a swerveDrive object but don't define it yet becasue it coomplains about not handling potential errors
+  SwerveDrive swerveDrive;
 
   // vision
   private Vision vision;
 
-   /**
-   * Get a {@link Supplier<ChassisSpeeds>} for the robot relative chassis speeds based on "standard" swerve drive
-   * controls.
-   *
-   * @param translationXScalar Translation in the X direction from [-1,1]
-   * @param translationYScalar Translation in the Y direction from [-1,1]
-   * @param rotationScalar     Rotation speed from [-1,1]
-   * @return {@link Supplier<ChassisSpeeds>} for the robot relative chassis speeds.
-   */
-  public SwerveInputStream getChassisSpeedsSupplier(DoubleSupplier translationXScalar,DoubleSupplier translationYScalar,DoubleSupplier rotationScalar) {
-    return new SwerveInputStream(drive, translationXScalar, translationYScalar, rotationScalar)
-      .withMaximumAngularVelocity(maximumChassisSpeedsAngularVelocity)
-      .withMaximumLinearVelocity(maximumChassisSpeedsLinearVelocity)
-      .withDeadband(Constants.OperatorConstants.DEADBAND)
-      .withCubeRotationControllerAxis()
-      .withCubeTranslationControllerAxis()
-      .withAllianceRelativeControl();
-  }
-
-  /**
-   * Get a {@link Supplier<ChassisSpeeds>} for the robot relative chassis speeds based on "standard" swerve drive
-   * controls.
-   *
-   * @param translationXScalar Translation in the X direction from [-1,1]
-   * @param translationYScalar Translation in the Y direction from [-1,1]
-   * @param rotationScalar     Rotation speed from [-1,1]
-   * @return {@link Supplier<ChassisSpeeds>} for the robot relative chassis speeds.
-   */
-  public Supplier<ChassisSpeeds> getSimpleChassisSpeeds(DoubleSupplier translationXScalar, DoubleSupplier translationYScalar, DoubleSupplier rotationScalar) {
-    return () -> new ChassisSpeeds(
-      maximumChassisSpeedsLinearVelocity.times(translationXScalar.getAsDouble()).in(MetersPerSecond),
-      maximumChassisSpeedsLinearVelocity.times(translationYScalar.getAsDouble()).in(MetersPerSecond),
-      maximumChassisSpeedsAngularVelocity.times(rotationScalar.getAsDouble()).in(RadiansPerSecond)
-    );
-  }
-
-
-  public SwerveModule createModule(SparkMax drive, SparkMax azimuth, AnalogEncoder absoluteEncoder, String moduleName, Translation2d location) {
-    MechanismGearing driveGearing   = new MechanismGearing(ModuleConstants.kDriveGearRatio);
-    MechanismGearing azimuthGearing = new MechanismGearing(ModuleConstants.kSteerGearRatio);
-
-    SmartMotorControllerConfig driveCfg = new SmartMotorControllerConfig(this)
-        .withWheelDiameter(Inches.of(ModuleConstants.kWheelDiameterInches))
-        .withClosedLoopController(ModuleConstants.kDrivePIDController)
-        .withGearing(driveGearing)
-        .withStatorCurrentLimit(Amps.of(ModuleConstants.kDriveCurrentLimit))
-        .withTelemetry("driveMotor", SmartMotorControllerConfig.TelemetryVerbosity.HIGH);
-
-    SmartMotorControllerConfig azimuthCfg = new SmartMotorControllerConfig(this)
-        .withClosedLoopController(ModuleConstants.kSteerPIDController)
-        .withContinuousWrapping(Radians.of(-Math.PI), Radians.of(Math.PI))
-        .withGearing(azimuthGearing)
-        .withStatorCurrentLimit(Amps.of(ModuleConstants.kSteerCurrentLimit))
-        .withTelemetry("angleMotor", SmartMotorControllerConfig.TelemetryVerbosity.HIGH);
-
-    SmartMotorController driveSMC   = new SparkWrapper(drive, DCMotor.getNEO(1), driveCfg);
-    SmartMotorController azimuthSMC = new SparkWrapper(azimuth, DCMotor.getNEO(1), azimuthCfg);
-
-    SwerveModuleConfig moduleConfig = new SwerveModuleConfig(driveSMC, azimuthSMC)
-        .withAbsoluteEncoder(absoluteEncoder.get())
-        .withTelemetry(moduleName, SmartMotorControllerConfig.TelemetryVerbosity.HIGH)
-        .withLocation(location)
-        .withOptimization(true);
-
-    return new SwerveModule(moduleConfig);
-  }
-
   public SwerveSubsystem() {
-    Pigeon2 gyro = new Pigeon2(14);
+    // Set Telemetry Verbosity (might want lower for comps as it can slow things down if it's too high, but for testing we don't care)
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
-    var fl = createModule(
-      new SparkMax(FrontLeft.kDriveMotorID, MotorType.kBrushless),
-      new SparkMax(FrontLeft.kSteerMotorID, MotorType.kBrushless),
-      new AnalogEncoder(FrontLeft.kAbsoluteEncoderID, 360, FrontLeft.kAngleOffsetRad),
-      "frontleft",
-      FrontLeft.kModuleLocation
-    );
+    // just put this code in a try/catch since java complains that there *might* be an error
+    try{
+      // swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED);
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(
+        Constants.MAX_SPEED,
+        new Pose2d(new Translation2d(Meter.of(1),
+        Meter.of(4)),
+        Rotation2d.fromDegrees(0))
+      );
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
 
-    var fr = createModule(
-      new SparkMax(FrontRight.kDriveMotorID, MotorType.kBrushless),
-      new SparkMax(FrontRight.kSteerMotorID, MotorType.kBrushless),
-      new AnalogEncoder(FrontRight.kAbsoluteEncoderID, 360, FrontRight.kAngleOffsetRad),
-      "frontright",
-      FrontRight.kModuleLocation
-    );
 
-    var bl = createModule(
-      new SparkMax(BackLeft.kDriveMotorID, MotorType.kBrushless),
-      new SparkMax(BackLeft.kSteerMotorID, MotorType.kBrushless),
-      new AnalogEncoder(BackLeft.kAbsoluteEncoderID, 360, BackLeft.kAngleOffsetRad),
-      "backleft",
-      BackLeft.kModuleLocation
-    );
-
-    var br = createModule(
-      new SparkMax(BackRight.kDriveMotorID, MotorType.kBrushless),
-      new SparkMax(BackRight.kSteerMotorID, MotorType.kBrushless),
-      new AnalogEncoder(BackRight.kAbsoluteEncoderID, 360, BackRight.kAngleOffsetRad),
-      "backright",
-      BackRight.kModuleLocation
-    );
-
-    SwerveDriveConfig config = new SwerveDriveConfig(this, fl, fr, bl, br)
-        .withGyro(gyro.getYaw().asSupplier())
-        .withStartingPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))
-        .withTranslationController(new PIDController(1, 0, 0))
-        .withRotationController(new PIDController(1, 0, 0));
-
-    drive = new SwerveDrive(config);
+    swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
+    swerveDrive.setCosineCompensator(true);//!SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
+    swerveDrive.setAngularVelocityCompensation(true, true,0.1); //Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
 
     setupVision();
 
+    // OPTIONAL: Stop the internal odometry thread to synchronize vision updates manually
+    // This prevents the wheels and cameras from fighting each other in different threads.
+    swerveDrive.stopOdometryThread();
+
     setupPathPlanner();
-    
-    SmartDashboard.putData("Field", field);
   }
 
-  private void setupPathPlanner() {
+  @Override
+  public void periodic() {
+      swerveDrive.updateOdometry();
+
+      vision.updatePoseEst(swerveDrive);
+  }
+
+  @Override
+  public void simulationPeriodic(){}
+
+  // command for zeroing the gyro, it needs disabling and re-enabling to start moving again after calling, might want to look into that
+  public Command zeroGyro() {
+    return run( () -> {
+      swerveDrive.zeroGyro();
+    });
+  }
+
+  public SwerveDrive getSwerveDrive() {
+    return swerveDrive;
+  }
+
+  // Methods for actually moving the motors, gets the velocity from the swerve input streams
+  public void driveFieldOriented(ChassisSpeeds velcocity) {
+    swerveDrive.driveFieldOriented(velcocity);
+  }
+
+  // A command that just runs the function above
+  public Command driveFieldOriented(Supplier<ChassisSpeeds> Velocity){
+    return run(()-> {
+      swerveDrive.driveFieldOriented(Velocity.get());
+    });
+  }
+
+  /**
+   * Setup AutoBuilder for PathPlanner.
+   */
+  public void setupPathPlanner()
+  {
+    // Load the RobotConfig from the GUI settings. You should probably
+    // store this in your Constants file
     RobotConfig config;
-    try {
+    try
+    {
       config = RobotConfig.fromGUISettings();
 
+      final boolean enableFeedforward = true;
+      // Configure AutoBuilder last
       AutoBuilder.configure(
-          drive::getPose,
+          swerveDrive::getPose,
           // Robot pose supplier
-          drive::resetOdometry,
+          swerveDrive::resetOdometry,
           // Method to reset odometry (will be called if your auto has a starting pose)
-          drive::getRobotRelativeSpeed,
+          swerveDrive::getRobotVelocity,
           // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
           (speedsRobotRelative, moduleFeedForwards) -> {
-            drive.setRobotRelativeChassisSpeeds(speedsRobotRelative);
+            if (enableFeedforward) {
+              swerveDrive.drive(
+                speedsRobotRelative,
+                swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
+                moduleFeedForwards.linearForces()
+              );
+            } else{
+              swerveDrive.setChassisSpeeds(speedsRobotRelative);
+            }
           },
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
@@ -201,55 +155,23 @@ public class SwerveSubsystem extends SubsystemBase
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
             var alliance = DriverStation.getAlliance();
-            return alliance.filter(value -> value == DriverStation.Alliance.Red).isPresent();
+            if (alliance.isPresent()) {
+              return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
           },
           this
           // Reference to this subsystem to set requirements
-      );
+       );
+
     } catch (Exception e) {
+      // Handle exception as needed
       e.printStackTrace();
     }
 
-
+    //Preload PathPlanner Path finding
+    // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE:
     CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
-  }
-
-  /**
-   * Drive the {@link SwerveDrive} object with robot relative chassis speeds.
-   *
-   * @param speedsSupplier Robot relative {@link ChassisSpeeds}.
-   * @return {@link Command} to run the drive.
-   */
-  public Command drive(Supplier<ChassisSpeeds> speedsSupplier) {
-    return drive.drive(speedsSupplier);
-  }
-
-  public Command setRobotRelativeChassisSpeeds(ChassisSpeeds speeds){
-    return run(() -> drive.setRobotRelativeChassisSpeeds(speeds));
-  }
-
-  public Command driveToPose(Pose2d pose) {
-    return drive.driveToPose(pose);
-  }
-
-  public Command driveRobotRelative(Supplier<ChassisSpeeds> speedsSupplier) {
-    return drive.drive(speedsSupplier);
-  }
-
-  public Command lock(){
-    return run(drive::lockPose);
-  }
-
-  @Override
-  public void periodic(){
-    drive.updateTelemetry();
-    vision.updatePoseEst(drive);
-    field.setRobotPose(drive.getPose());
-  }
-
-  @Override
-  public void simulationPeriodic(){
-    drive.simIterate();
   }
 
   public void setupVision() {
