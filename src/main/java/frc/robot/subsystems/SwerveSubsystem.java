@@ -20,6 +20,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -48,6 +49,9 @@ public class SwerveSubsystem extends SubsystemBase
 
   private final SwerveDrive drive;
   private final Field2d field = new Field2d();
+
+  // vision
+  private Vision vision;
 
    /**
    * Get a {@link Supplier<ChassisSpeeds>} for the robot relative chassis speeds based on "standard" swerve drive
@@ -86,19 +90,19 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
 
-  public SwerveModule createModule(SparkMax drive, SparkMax azimuth, CANcoder absoluteEncoder, String moduleName, Translation2d location) {
+  public SwerveModule createModule(SparkMax drive, SparkMax azimuth, AnalogEncoder absoluteEncoder, String moduleName, Translation2d location) {
     MechanismGearing driveGearing   = new MechanismGearing(ModuleConstants.kDriveGearRatio);
     MechanismGearing azimuthGearing = new MechanismGearing(ModuleConstants.kSteerGearRatio);
 
     SmartMotorControllerConfig driveCfg = new SmartMotorControllerConfig(this)
         .withWheelDiameter(Inches.of(ModuleConstants.kWheelDiameterInches))
-        .withClosedLoopController(50, 0, 4)
+        .withClosedLoopController(ModuleConstants.kDrivePIDController)
         .withGearing(driveGearing)
         .withStatorCurrentLimit(Amps.of(ModuleConstants.kDriveCurrentLimit))
         .withTelemetry("driveMotor", SmartMotorControllerConfig.TelemetryVerbosity.HIGH);
 
     SmartMotorControllerConfig azimuthCfg = new SmartMotorControllerConfig(this)
-        .withClosedLoopController(50, 0, 4)
+        .withClosedLoopController(ModuleConstants.kSteerPIDController)
         .withContinuousWrapping(Radians.of(-Math.PI), Radians.of(Math.PI))
         .withGearing(azimuthGearing)
         .withStatorCurrentLimit(Amps.of(ModuleConstants.kSteerCurrentLimit))
@@ -108,7 +112,7 @@ public class SwerveSubsystem extends SubsystemBase
     SmartMotorController azimuthSMC = new SparkWrapper(azimuth, DCMotor.getNEO(1), azimuthCfg);
 
     SwerveModuleConfig moduleConfig = new SwerveModuleConfig(driveSMC, azimuthSMC)
-        .withAbsoluteEncoder(absoluteEncoder.getAbsolutePosition().asSupplier())
+        .withAbsoluteEncoder(absoluteEncoder.get())
         .withTelemetry(moduleName, SmartMotorControllerConfig.TelemetryVerbosity.HIGH)
         .withLocation(location)
         .withOptimization(true);
@@ -122,7 +126,7 @@ public class SwerveSubsystem extends SubsystemBase
     var fl = createModule(
       new SparkMax(FrontLeft.kDriveMotorID, MotorType.kBrushless),
       new SparkMax(FrontLeft.kSteerMotorID, MotorType.kBrushless),
-      new CANcoder(FrontLeft.kAbsoluteEncoderID),
+      new AnalogEncoder(FrontLeft.kAbsoluteEncoderID, 360, FrontLeft.kAngleOffsetRad),
       "frontleft",
       FrontLeft.kModuleLocation
     );
@@ -130,7 +134,7 @@ public class SwerveSubsystem extends SubsystemBase
     var fr = createModule(
       new SparkMax(FrontRight.kDriveMotorID, MotorType.kBrushless),
       new SparkMax(FrontRight.kSteerMotorID, MotorType.kBrushless),
-      new CANcoder(FrontRight.kAbsoluteEncoderID),
+      new AnalogEncoder(FrontRight.kAbsoluteEncoderID, 360, FrontRight.kAngleOffsetRad),
       "frontright",
       FrontRight.kModuleLocation
     );
@@ -138,7 +142,7 @@ public class SwerveSubsystem extends SubsystemBase
     var bl = createModule(
       new SparkMax(BackLeft.kDriveMotorID, MotorType.kBrushless),
       new SparkMax(BackLeft.kSteerMotorID, MotorType.kBrushless),
-      new CANcoder(BackLeft.kAbsoluteEncoderID),
+      new AnalogEncoder(BackLeft.kAbsoluteEncoderID, 360, BackLeft.kAngleOffsetRad),
       "backleft",
       BackLeft.kModuleLocation
     );
@@ -146,7 +150,7 @@ public class SwerveSubsystem extends SubsystemBase
     var br = createModule(
       new SparkMax(BackRight.kDriveMotorID, MotorType.kBrushless),
       new SparkMax(BackRight.kSteerMotorID, MotorType.kBrushless),
-      new CANcoder(BackRight.kAbsoluteEncoderID),
+      new AnalogEncoder(BackRight.kAbsoluteEncoderID, 360, BackRight.kAngleOffsetRad),
       "backright",
       BackRight.kModuleLocation
     );
@@ -159,11 +163,13 @@ public class SwerveSubsystem extends SubsystemBase
 
     drive = new SwerveDrive(config);
 
-    
-      setupPathPlanner();
+    setupVision();
+
+    setupPathPlanner();
     
     SmartDashboard.putData("Field", field);
   }
+
   private void setupPathPlanner() {
     RobotConfig config;
     try {
@@ -214,41 +220,43 @@ public class SwerveSubsystem extends SubsystemBase
    * @param speedsSupplier Robot relative {@link ChassisSpeeds}.
    * @return {@link Command} to run the drive.
    */
-  public Command drive(Supplier<ChassisSpeeds> speedsSupplier)
-  {
+  public Command drive(Supplier<ChassisSpeeds> speedsSupplier) {
     return drive.drive(speedsSupplier);
   }
 
-  public Command setRobotRelativeChassisSpeeds(ChassisSpeeds speeds)
-  {
+  public Command setRobotRelativeChassisSpeeds(ChassisSpeeds speeds){
     return run(() -> drive.setRobotRelativeChassisSpeeds(speeds));
   }
 
-  public Command driveToPose(Pose2d pose)
-  {
+  public Command driveToPose(Pose2d pose) {
     return drive.driveToPose(pose);
   }
 
-  public Command driveRobotRelative(Supplier<ChassisSpeeds> speedsSupplier)
-  {
+  public Command driveRobotRelative(Supplier<ChassisSpeeds> speedsSupplier) {
     return drive.drive(speedsSupplier);
   }
 
-  public Command lock()
-  {
+  public Command lock(){
     return run(drive::lockPose);
   }
 
   @Override
-  public void periodic()
-  {
+  public void periodic(){
     drive.updateTelemetry();
+    vision.updatePoseEst(drive);
     field.setRobotPose(drive.getPose());
   }
 
   @Override
-  public void simulationPeriodic()
-  {
+  public void simulationPeriodic(){
     drive.simIterate();
+  }
+
+  public void setupVision() {
+    vision = new Vision();
+  }
+
+  public Vision getVision() {
+    return vision;
   }
 }

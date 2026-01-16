@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -9,11 +10,15 @@ import edu.wpi.first.math.util.Units;
  * Grouped into inner classes to maintain a "DriveConstants.kConstant" naming convention.
  */
 public class SwerveConstants {
-
     public static final class ModuleConstants {
         // --- Physical Wheel Specs ---
         public static final double kWheelDiameterInches = 4.0;
         public static final double kWheelDiameterMeters = Units.inchesToMeters(kWheelDiameterInches);
+
+        // --- Tuning Parameters ---
+        // These values are used to tune the PID controllers for the drive and steer motors.
+        public static final PIDController kDrivePIDController = new PIDController(0.0060645, 0.00001, 0.0001);
+        public static final PIDController kSteerPIDController = new PIDController(0.01, 0.00002, 0.04);
         
         // --- Gear Ratios ---
         // Format: (Driven Teeth / Driving Teeth). 
