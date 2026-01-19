@@ -35,7 +35,6 @@ public class DriveConstants {
     public static final Rotation2d backRightZeroRotation = new Rotation2d(0.0);
 
     // Device CAN IDs
-
     public static final int frontRightDriveCanId = 4;
     public static final int frontLeftDriveCanId = 6;
     public static final int backLeftDriveCanId = 8;
@@ -45,6 +44,12 @@ public class DriveConstants {
     public static final int frontLeftTurnCanId = 7;
     public static final int backLeftTurnCanId = 9;
     public static final int backRightTurnCanId = 11;
+
+    // Encoder Analog Inputs
+    public static final int frontRightAnalogIn = 2;
+    public static final int frontLeftAnalogIn = 3;
+    public static final int backLeftAnalogIn = 1;
+    public static final int backRightAnalogIn = 0;
 
     // Drive motor configuration
     public static final int driveMotorCurrentLimit = 50;
@@ -74,8 +79,8 @@ public class DriveConstants {
 
     // Turn encoder configuration
     public static final boolean turnEncoderInverted = true;
-    public static final double turnEncoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
-    public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
+    public static final double turnEncoderPositionFactor = 2 * Math.PI / turnMotorReduction; // Rotor Rotations -> Wheel Radians
+    public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0 / turnMotorReduction; // Rotor RPM -> Wheel Rad/Sec
 
     // Turn PID configuration
     public static final double turnKp = 2.0;
