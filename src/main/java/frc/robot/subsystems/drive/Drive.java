@@ -71,28 +71,38 @@ public class Drive extends SubsystemBase {
 
 
     // Swerve widget (Elastic)
-    Sendable SwerveWidget = new Sendable() {
+    private SwerveModuleState[] lastSetpointStates = new SwerveModuleState[] {
+        new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState()
+    };
+
+    private final Sendable SwerveWidget = new Sendable() {
         @Override
         public void initSendable(SendableBuilder builder) {
-            builder.setSmartDashboardType("SwerveDrive");
+            builder.setSmartDashboardType("YAGSL Swerve Drive");
 
-            // Front Left
-            builder.addDoubleProperty("Front Left Angle", () -> modules[0].getState().angle.getRadians(), null);
-            builder.addDoubleProperty("Front Left Velocity", () -> modules[0].getState().speedMetersPerSecond, null);
+            builder.addDoubleArrayProperty("measuredStates", () -> {
+                double[] states = new double[8];
+                for (int i = 0; i < 4; i++) {
+                    states[i * 2] = modules[i].getState().angle.getRadians();
+                    states[i * 2 + 1] = modules[i].getState().speedMetersPerSecond;
+                }
+                return states;
+            }, null);
 
-            // Front Right
-            builder.addDoubleProperty("Front Right Angle", () -> modules[1].getState().angle.getRadians(), null);
-            builder.addDoubleProperty("Front Right Velocity", () -> modules[1].getState().speedMetersPerSecond, null);
+            builder.addDoubleArrayProperty("desiredStates", () -> {
+                double[] states = new double[8];
+                for (int i = 0; i < 4; i++) {
+                    states[i * 2] = lastSetpointStates[i].angle.getRadians();
+                    states[i * 2 + 1] = lastSetpointStates[i].speedMetersPerSecond;
+                }
+                return states;
+            }, null);
 
-            // Back Left
-            builder.addDoubleProperty("Back Left Angle", () -> modules[2].getState().angle.getRadians(), null);
-            builder.addDoubleProperty("Back Left Velocity", () -> modules[2].getState().speedMetersPerSecond, null);
-
-            // Back Right
-            builder.addDoubleProperty("Back Right Angle", () -> modules[3].getState().angle.getRadians(), null);
-            builder.addDoubleProperty("Back Right Velocity", () -> modules[3].getState().speedMetersPerSecond, null);
-
-            builder.addDoubleProperty("Robot Angle", () -> getRotation().getRadians(), null);
+            builder.addDoubleProperty("robotRotation", () -> getRotation().getRadians(), null);
+            builder.addDoubleProperty("maxSpeed", () -> maxSpeedMetersPerSec, null);
+            builder.addDoubleProperty("sizeLeftRight", () -> trackWidth, null); // Set to your width in meters
+            builder.addDoubleProperty("sizeFrontBack", () -> wheelBase, null); // Set to your length in meters
+            builder.addStringProperty("rotationUnit", () -> "radians", null);
         }
     };
 
@@ -221,6 +231,9 @@ public class Drive extends SubsystemBase {
         ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
         SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, maxSpeedMetersPerSec);
+
+        // Update last setpoints for swerve widgeta
+        this.lastSetpointStates = setpointStates;
 
         // Log unoptimized setpoints
         Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
