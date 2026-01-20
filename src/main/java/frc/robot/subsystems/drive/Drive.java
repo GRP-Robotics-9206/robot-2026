@@ -29,10 +29,13 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -65,6 +68,33 @@ public class Drive extends SubsystemBase {
         };
 
     private SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
+
+
+    // Swerve widget (Elastic)
+    Sendable SwerveWidget = new Sendable() {
+        @Override
+        public void initSendable(SendableBuilder builder) {
+            builder.setSmartDashboardType("SwerveDrive");
+
+            // Front Left
+            builder.addDoubleProperty("Front Left Angle", () -> modules[0].getState().angle.getRadians(), null);
+            builder.addDoubleProperty("Front Left Velocity", () -> modules[0].getState().speedMetersPerSecond, null);
+
+            // Front Right
+            builder.addDoubleProperty("Front Right Angle", () -> modules[1].getState().angle.getRadians(), null);
+            builder.addDoubleProperty("Front Right Velocity", () -> modules[1].getState().speedMetersPerSecond, null);
+
+            // Back Left
+            builder.addDoubleProperty("Back Left Angle", () -> modules[2].getState().angle.getRadians(), null);
+            builder.addDoubleProperty("Back Left Velocity", () -> modules[2].getState().speedMetersPerSecond, null);
+
+            // Back Right
+            builder.addDoubleProperty("Back Right Angle", () -> modules[3].getState().angle.getRadians(), null);
+            builder.addDoubleProperty("Back Right Velocity", () -> modules[3].getState().speedMetersPerSecond, null);
+
+            builder.addDoubleProperty("Robot Angle", () -> getRotation().getRadians(), null);
+        }
+    };
 
     public Drive(
         GyroIO gyroIO,
@@ -126,6 +156,7 @@ public class Drive extends SubsystemBase {
         for (var module : modules) {
             module.periodic();
         }
+
         odometryLock.unlock();
 
         // Stop moving when disabled
@@ -176,6 +207,8 @@ public class Drive extends SubsystemBase {
 
         // Update gyro alert
         gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+
+        SmartDashboard.putData("Swerve Drive", SwerveWidget);
     }
 
     /**
