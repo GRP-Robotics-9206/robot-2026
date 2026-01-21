@@ -7,7 +7,6 @@
 
 package frc.robot.subsystems.drive;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
