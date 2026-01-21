@@ -1,9 +1,15 @@
-// Copyright (c) 2021-2026 Littleton Robotics
-// http://github.com/Mechanical-Advantage
+// Based on original work by Littleton Robotics (2021-2026)
+// Source: http://github.com/Mechanical-Advantage
+// 
+// Modified by GRP Robotics (2026)
+// Source: https://github.com/GRP-Robotics-9206
 //
-// Use of this source code is governed by a BSD
-// license that can be found in the LICENSE file
-// at the root directory of this project.
+// -------------------------------------------------------------------------
+// Original license notice:
+// Copyright (c) 2021-2026 Littleton Robotics
+// Use of this source code is governed by a BSD license that can be found 
+// in the LICENSE file at the root directory of this project.
+// -------------------------------------------------------------------------
 
 package frc.robot.subsystems.vision;
 
