@@ -1,0 +1,14 @@
+package frc.robot.subsystems.intake;
+
+public interface IntakeIO {
+  @AutoLog
+  public static class IntakeIOInputs {
+    public double rollerVelocityRadPerSec = 0.0;
+    public double pivotPositionRad = 0.0;
+    public double rollerAppliedVolts = 0.0;
+  }
+
+  public default void updateInputs(IntakeIOInputs inputs) {}
+  public default void setRollerVoltage(double volts) {}
+  public default void setPivotVoltage(double volts) {}
+}
