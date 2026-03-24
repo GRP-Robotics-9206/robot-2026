@@ -23,8 +23,8 @@ import edu.wpi.first.math.util.Units;
 public class DriveConstants {
     public static final double maxSpeedMetersPerSec = 4.1;
     public static final double odometryFrequency = 100.0; // Hz
-    public static final double trackWidth = Units.inchesToMeters(25.0);
-    public static final double wheelBase = Units.inchesToMeters(25.0);
+    public static final double trackWidth = Units.inchesToMeters(22.5);
+    public static final double wheelBase = Units.inchesToMeters(22.5);
     public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
     public static final Translation2d[] moduleTranslations =
         new Translation2d[]{
@@ -35,31 +35,31 @@ public class DriveConstants {
         };
 
     // Zeroed rotation values for each module, see setup instructions
-    public static final Rotation2d frontLeftZeroRotation = new Rotation2d(1.288);
-    public static final Rotation2d frontRightZeroRotation = new Rotation2d(1.582);
-    public static final Rotation2d backLeftZeroRotation = new Rotation2d(-0.422);
-    public static final Rotation2d backRightZeroRotation = new Rotation2d(1.759);
+    public static final Rotation2d frontLeftZeroRotation = new Rotation2d(0.177);
+    public static final Rotation2d frontRightZeroRotation = new Rotation2d(2.722);
+    public static final Rotation2d backLeftZeroRotation = new Rotation2d(-2.970);
+    public static final Rotation2d backRightZeroRotation = new Rotation2d(-1.819);
 
     // Device CAN IDs
-    public static final int frontRightDriveCanId = 4;
-    public static final int frontLeftDriveCanId = 6;
-    public static final int backLeftDriveCanId = 8;
-    public static final int backRightDriveCanId = 10;
+    public static final int frontRightDriveCanId = 8;
+    public static final int frontLeftDriveCanId = 4;
+    public static final int backLeftDriveCanId = 10;
+    public static final int backRightDriveCanId = 6;
 
-    public static final int frontRightTurnCanId = 5;
-    public static final int frontLeftTurnCanId = 7;
-    public static final int backLeftTurnCanId = 9;
-    public static final int backRightTurnCanId = 11;
+    public static final int frontRightTurnCanId = 9;
+    public static final int frontLeftTurnCanId = 5;
+    public static final int backLeftTurnCanId = 11;
+    public static final int backRightTurnCanId = 7;
 
     // Encoder Analog Inputs
-    public static final int frontRightAnalogIn = 2;
-    public static final int frontLeftAnalogIn = 3;
-    public static final int backLeftAnalogIn = 1;
-    public static final int backRightAnalogIn = 0;
+    public static final int frontRightAnalogIn = 1;
+    public static final int frontLeftAnalogIn = 0;
+    public static final int backLeftAnalogIn = 2;
+    public static final int backRightAnalogIn = 3;
 
     // Drive motor configuration
     public static final int driveMotorCurrentLimit = 50;
-    public static final double wheelRadiusMeters = Units.inchesToMeters(2.0);
+    public static final double wheelRadiusMeters = Units.inchesToMeters( 1.972);
     public static final double driveMotorReduction = 6.75; // Thrifty Swerve 18t
     public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
 
@@ -67,12 +67,11 @@ public class DriveConstants {
     public static final double driveEncoderPositionFactor = 2 * Math.PI / driveMotorReduction; // Rotor Rotations -> Wheel Radians
     public static final double driveEncoderVelocityFactor = (2 * Math.PI) / 60.0 / driveMotorReduction; // Rotor RPM -> Wheel Rad/Sec
 
-
     // Drive PID configuration
     public static final double driveKp = 0.006;
     public static final double driveKd = 0.0;
-    public static final double driveKs = 0.09737;
-    public static final double driveKv = 0.13406; // Comes from Simple FF auto
+    public static final double driveKs = 0.09355;
+    public static final double driveKv = 0.13127; // Comes from Simple FF auto
     public static final double driveSimP = 0.05;
     public static final double driveSimD = 0.0;
     public static final double driveSimKs = 0.0;
