@@ -27,10 +27,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.drive.*;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.subsystems.intake.*;
+import frc.robot.subsystems.vision.*;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -47,6 +45,7 @@ public class RobotContainer {
     // Subsystems
     private final Drive drive;
     private final Vision vision;
+    private final Intake intake;
 
     // Controller
     private final CommandXboxController controller = new CommandXboxController(0);
@@ -78,6 +77,8 @@ public class RobotContainer {
                     new VisionIOPhotonVision(camera0Name, robotToCamera0),
                     new VisionIOPhotonVision(camera1Name, robotToCamera1)
                 );
+
+                intake = new Intake(new IntakeIOSpark());
                 break;
 
             case SIM:
@@ -95,6 +96,8 @@ public class RobotContainer {
                     new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
                     new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose)
                 );
+
+                intake = new Intake(new IntakeIOSim());
                 break;
 
             default:
@@ -112,6 +115,8 @@ public class RobotContainer {
                     new VisionIO() {},
                     new VisionIO() {}
                 );
+
+                intake = new Intake(new IntakeIO() {});
                 break;
         }
 
