@@ -1,0 +1,74 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "start rs"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "turn rs"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "swipe rs"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "return rs"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Kick"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopKick"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopShooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DisableSOTM"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

@@ -46,6 +46,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -446,13 +447,5 @@ public class Drive extends SubsystemBase {
         } else {
             PPHolonomicDriveController.clearRotationFeedbackOverride();
         }
-    }
-
-    public Command enableSOTM() {
-        return runOnce(() -> setSOTM(true)).withName("EnableSOTM");
-    }
-
-    public Command disableSOTM() {
-        return runOnce(() -> setSOTM(false)).withName("DisableSOTM");
     }
 }

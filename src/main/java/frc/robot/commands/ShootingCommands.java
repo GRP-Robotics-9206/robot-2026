@@ -81,4 +81,21 @@ public class ShootingCommands {
             .onlyIf(shooter::atSetpoint)
             .finallyDo(kicker::stop);
     }
+
+    public static Command autoKick(
+        Kicker kicker,
+        Shooter shooter
+    ) {
+        return kicker.run()
+            .onlyIf(shooter::atSetpoint)
+            .withName("AutoKick");
+    }
+
+    public static Command enableSOTM(Drive drive) {
+        return Commands.runOnce(() -> drive.setSOTM(true)).withName("EnableSOTM");
+    }
+
+    public static Command disableSOTM(Drive drive) {
+        return Commands.runOnce(() -> drive.setSOTM(false)).withName("DisableSOTM");
+    }
 }

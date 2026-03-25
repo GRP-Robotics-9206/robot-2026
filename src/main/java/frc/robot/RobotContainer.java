@@ -20,11 +20,9 @@ import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -159,11 +157,14 @@ public class RobotContainer {
         }
         
         // Setup named commands for pathplanner
+        NamedCommands.registerCommand("Setup", IntakeCommands.setup(intake));
         NamedCommands.registerCommand("IntakeBall", IntakeCommands.intake(intake));
-        NamedCommands.registerCommand("EnableSOTM", drive.enableSOTM());
-        NamedCommands.registerCommand("DisableSOTM", drive.disableSOTM());
+        NamedCommands.registerCommand("EnableSOTM", ShootingCommands.enableSOTM(drive));
+        NamedCommands.registerCommand("DisableSOTM", ShootingCommands.disableSOTM(drive));
         NamedCommands.registerCommand("AutoSpool", ShootingCommands.autoSpool(drive, shooter));
-        NamedCommands.registerCommand("Kick", ShootingCommands.kick(kicker, shooter).withTimeout(0.5));        
+        NamedCommands.registerCommand("Kick", ShootingCommands.autoKick(kicker, shooter));  
+        NamedCommands.registerCommand("StopKick", kicker.stop());   
+        NamedCommands.registerCommand("StopShooter", shooter.stop());       
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -180,7 +181,7 @@ public class RobotContainer {
         configureButtonBindings();
 
         // Zones
-        configueZones();
+         Zones.logAllZones();
     }
 
     /**
@@ -242,10 +243,8 @@ public class RobotContainer {
         );
     }
 
-    private void configueZones() {
-        Zones.logAllZones();
-
-        Zones.TRENCH_ZONES.willContain(drive::getPose, drive::getFieldRelativeSpeeds, Seconds.of(0.25))
+    public void setupTeleopCommands() {
+      Zones.TRENCH_ZONES.willContain(drive::getPose, drive::getFieldRelativeSpeeds, Seconds.of(0.25))
         .and(() -> Math.abs(controller.getLeftX()) > 0.5 || Math.abs(controller.getLeftY()) > 0.5)
         .onTrue(
             Commands.deferredProxy(() -> 
