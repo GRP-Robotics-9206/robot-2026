@@ -8,11 +8,16 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.kicker.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterCalculator;
 
 public class ShootingCommands {
-    public static Command aimAndShoot(
+    /**
+     * Creates a command that simultaneously aims the drivetrain toward a computed shot aim point
+     * and spools the shooter to the velocity required for that moving shot.
+     */
+    public static Command aimAndSpool(
         Drive drive,
         Shooter shooter,
         DoubleSupplier xSupplier,
@@ -49,5 +54,18 @@ public class ShootingCommands {
             drive.stop();
             shooter.stop().schedule();
         });
+    }
+
+    /**
+     * Shoots the kicker forward while the shooter is at its setpoint. 
+     * This should be used in conjunction with aimAndSpool, which aims the robot
+     */
+    public static Command kick(
+        Kicker kicker,
+        Shooter shooter
+    ) {
+        return kicker.run()
+            .onlyIf(shooter::atSetpoint)
+            .finallyDo(kicker::stop);
     }
 }

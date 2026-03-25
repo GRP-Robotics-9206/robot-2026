@@ -13,8 +13,6 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.vision.VisionConstants.*;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,12 +23,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.DriveCommands;
+import frc.robot.commands.*;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.*;
+import frc.robot.subsystems.kicker.*;
+import frc.robot.subsystems.shooter.*;
 import frc.robot.subsystems.vision.*;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
+import static frc.robot.subsystems.vision.VisionConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -46,6 +47,8 @@ public class RobotContainer {
     private final Drive drive;
     private final Vision vision;
     private final Intake intake;
+    private final Shooter shooter;
+    private final Kicker kicker;
 
     // Controller
     private final CommandXboxController controller = new CommandXboxController(0);
@@ -79,6 +82,8 @@ public class RobotContainer {
                 );
 
                 intake = new Intake(new IntakeIOSpark());
+                shooter = new Shooter(new ShooterIOSpark());
+                kicker = new Kicker(new KickerIOSpark ());
                 break;
 
             case SIM:
@@ -98,6 +103,8 @@ public class RobotContainer {
                 );
 
                 intake = new Intake(new IntakeIOSim());
+                shooter = new Shooter(new ShooterIOSim());
+                kicker = new Kicker(new KickerIOSim());
                 break;
 
             default:
@@ -117,6 +124,8 @@ public class RobotContainer {
                 );
 
                 intake = new Intake(new IntakeIO() {});
+                shooter = new Shooter(new ShooterIO() {});
+                kicker = new Kicker(new KickerIO() {});
                 break;
         }
 
@@ -154,16 +163,6 @@ public class RobotContainer {
             )
         );
 
-        // Lock to 0° when A button is held
-        controller.a().whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
-                () -> Rotation2d.kZero
-            )
-        );
-
         // Switch to X pattern when X button is pressed
         controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
@@ -172,6 +171,35 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                 drive
             ).ignoringDisable(true)
+        );
+
+        // Aim and shoot when left trigger is held
+        controller.leftTrigger().whileTrue(
+            ShootingCommands.aimAndSpool(
+                drive, 
+                shooter, 
+                () -> -controller.getLeftY(), 
+                () -> -controller.getLeftX()
+            )
+        );
+
+        // Actually Shoot when right trigger is held (after spooling up)
+        controller.rightTrigger().whileTrue(
+            ShootingCommands.kick(kicker, shooter)
+        );
+
+        // Intake when right bumper is held
+        controller.rightBumper().whileTrue(
+            IntakeCommands.intake(intake)
+        );
+
+        // Panic Button: Eject everything when left bumper is held
+        controller.start().whileTrue(
+            Commands.parallel(
+                intake.eject(),
+                kicker.eject(),
+                shooter.stop()
+            )
         );
     }
 

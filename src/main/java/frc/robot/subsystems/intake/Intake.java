@@ -32,8 +32,20 @@ public class Intake extends SubsystemBase {
         return this.setGoalState(IntakeState.EJECTING).withName("Eject");
     }
 
+    public Command stop() {
+        return this.setGoalState(IntakeState.DEPLOYED).withName("Stop");
+    }
+
     public Command setGoalState(IntakeState newState) {
         return runOnce(() -> this.state = newState);
+    }
+
+    public Boolean deployed() {
+        return state != IntakeState.STOWED && state != IntakeState.DEPLOYING;
+    }
+
+    public IntakeState getState() {
+        return state;
     }
     
     @Override
@@ -46,6 +58,7 @@ public class Intake extends SubsystemBase {
                 io.setPivotVoltage(-1.0); 
                 io.setRollerVoltage(0.0);
             }
+
             case DEPLOYING -> {
                 io.setPivotVoltage(2.0); 
                 
@@ -54,14 +67,16 @@ public class Intake extends SubsystemBase {
                 }
             }
 
-        case DEPLOYED -> {
-            io.setPivotVoltage(0.0);
-            io.setRollerVoltage(0.0);
-        }
+            case DEPLOYED -> {
+                io.setPivotVoltage(0.0);
+                io.setRollerVoltage(0.0);
+            }
+
             case INTAKING -> {
                 io.setPivotVoltage(0.0);
                 io.setRollerVoltage(8.0);
             }
+
             case EJECTING -> {
                 io.setPivotVoltage(0.0);
                 io.setRollerVoltage(-8.0);

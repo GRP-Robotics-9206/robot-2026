@@ -25,12 +25,12 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command stop() {
-        return setGoalState(ShooterState.IDLE);
+        return setGoalState(ShooterState.IDLE).withName("Stop");
     }
 
     public Command shoot(double velocity) {
         this.targetVelocity = velocity;
-        return setGoalState(ShooterState.SPOOLING);
+        return setGoalState(ShooterState.SPOOLING).withName("Spooling");
     }
 
     public Command setGoalState(ShooterState newState) {
@@ -40,6 +40,14 @@ public class Shooter extends SubsystemBase {
     public void setTargetVelocity(double velocity) {
         this.targetVelocity = velocity;
         this.state = ShooterState.SPOOLING; 
+    }
+
+    public Boolean atSetpoint() {
+        return state == ShooterState.READY;
+    }
+
+    public ShooterState getState() {
+        return state;
     }
 
     @Override
