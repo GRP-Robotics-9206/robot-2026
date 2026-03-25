@@ -410,4 +410,12 @@ public class Drive extends SubsystemBase {
     public double getMaxAngularSpeedRadPerSec() {
         return maxSpeedMetersPerSec / driveBaseRadius;
     }
+
+    /**
+     * Returns the current velocity of the robot relative to the field.
+     * This is vital for "Shooting on the Move" calculations.
+     */
+    public ChassisSpeeds getFieldRelativeSpeeds() {
+        return ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getRotation());
+    }
 }

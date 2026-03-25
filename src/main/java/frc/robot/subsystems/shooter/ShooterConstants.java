@@ -1,0 +1,13 @@
+package frc.robot.subsystems.shooter;
+
+import frc.robot.util.TunableControls.ControlConstants;
+
+public class ShooterConstants {
+    public static final int flywheelCanID = 14;
+
+    public static final ControlConstants constants = new ControlConstants()
+        .withPID(0.1, 0.0, 0.0)
+        .withFeedforward(0.012, 0.0)
+        .withPhysical(0.2, 0.0)
+        .withTolerance(1.0);   
+}

@@ -13,6 +13,13 @@
 
 package frc.robot.commands;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -30,13 +37,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
-
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
+import frc.robot.subsystems.shooter.ShooterCalculator;
 
 public class DriveCommands {
     private static final double DEADBAND = 0.1;
@@ -51,7 +52,7 @@ public class DriveCommands {
 
     private DriveCommands() {}
 
-    private static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
+    static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
         // Apply deadband
         double linearMagnitude = MathUtil.applyDeadband(Math.hypot(x, y), DEADBAND);
         Rotation2d linearDirection = new Rotation2d(Math.atan2(y, x));
@@ -300,5 +301,40 @@ public class DriveCommands {
         double[] positions = new double[4];
         Rotation2d lastAngle = Rotation2d.kZero;
         double gyroDelta = 0.0;
+    }
+
+
+    public static ChassisSpeeds calculateAimSpeeds(
+        Drive drive,
+        DoubleSupplier xSupplier,
+        DoubleSupplier ySupplier,
+        Translation2d aimPoint,
+        ProfiledPIDController angleController
+    ) {
+        Translation2d linearVelocity = getLinearVelocityFromJoysticks(
+            xSupplier.getAsDouble(), 
+            ySupplier.getAsDouble()
+        );
+
+        Rotation2d targetAngle = aimPoint
+            .minus(drive.getPose().getTranslation())
+            .getAngle();
+
+        double omega = angleController.calculate(
+            drive.getRotation().getRadians(), 
+            targetAngle.getRadians()
+        );
+
+        ChassisSpeeds fieldSpeeds = new ChassisSpeeds(
+            linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+            linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+            omega
+        );
+
+        boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
+        return ChassisSpeeds.fromFieldRelativeSpeeds(
+            fieldSpeeds,
+            isRed ? drive.getRotation().plus(Rotation2d.kPi) : drive.getRotation()
+        );
     }
 }
