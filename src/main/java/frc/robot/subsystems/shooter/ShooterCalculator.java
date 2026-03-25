@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -77,5 +78,10 @@ public class ShooterCalculator {
         Logger.recordOutput("Shooter/EffectiveDistance", distance);
 
         return new ShotData(targetVelocity, tof, predictedTarget);
+    }
+
+    public static Rotation2d getTargetRotation(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds) {
+        ShotData data = calculateMovingShot(robotPose, fieldRelativeSpeeds);
+        return data.aimPoint().minus(robotPose.getTranslation()).getAngle();
     }
 }

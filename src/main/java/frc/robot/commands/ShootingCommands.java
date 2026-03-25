@@ -56,6 +56,19 @@ public class ShootingCommands {
         });
     }
 
+    public static Command autoSpool(Drive drive, Shooter shooter) {
+        return Commands.run(
+            () -> {
+                var shotData = ShooterCalculator.calculateMovingShot(
+                    drive.getPose(), 
+                    drive.getFieldRelativeSpeeds()
+                );
+                shooter.setTargetVelocity(shotData.velocity());
+            },
+            shooter
+        ).withName("AutoSpool");
+    }
+
     /**
      * Shoots the kicker forward while the shooter is at its setpoint. 
      * This should be used in conjunction with aimAndSpool, which aims the robot

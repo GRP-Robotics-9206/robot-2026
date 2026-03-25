@@ -160,9 +160,10 @@ public class RobotContainer {
         
         // Setup named commands for pathplanner
         NamedCommands.registerCommand("IntakeBall", IntakeCommands.intake(intake));
-        NamedCommands.registerCommand("SafeStow", IntakeCommands.safeStow(intake));
-        NamedCommands.registerCommand("AimAndSpool", ShootingCommands.aimAndSpool(drive, shooter, () -> 0.0, () -> 0.0));
-        NamedCommands.registerCommand("Kick", ShootingCommands.kick(kicker, shooter).withTimeout(0.5));
+        NamedCommands.registerCommand("EnableSOTM", drive.enableSOTM());
+        NamedCommands.registerCommand("DisableSOTM", drive.disableSOTM());
+        NamedCommands.registerCommand("AutoSpool", ShootingCommands.autoSpool(drive, shooter));
+        NamedCommands.registerCommand("Kick", ShootingCommands.kick(kicker, shooter).withTimeout(0.5));        
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

@@ -25,6 +25,7 @@ import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -35,6 +36,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert;
@@ -48,6 +50,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import frc.robot.subsystems.shooter.ShooterCalculator;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -75,6 +78,10 @@ public class Drive extends SubsystemBase {
     private SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
     private Field2d field = new Field2d();
 
+    private final ProfiledPIDController aimController = new ProfiledPIDController(
+        5.0, 0.0, 0.4, 
+        new TrapezoidProfile.Constraints(8.0, 20.0)
+    );
 
     // Swerve widget (Elastic)
     private SwerveModuleState[] lastSetpointStates = new SwerveModuleState[] {
@@ -162,6 +169,8 @@ public class Drive extends SubsystemBase {
                     (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
                 new SysIdRoutine.Mechanism((voltage) -> runCharacterization(voltage.in(Volts)), null, this)
             );
+
+        aimController.enableContinuousInput(-Math.PI, Math.PI);
 
         field = new Field2d();
         SmartDashboard.putData(field);
@@ -415,5 +424,35 @@ public class Drive extends SubsystemBase {
      */
     public ChassisSpeeds getFieldRelativeSpeeds() {
         return ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getRotation());
+    }
+
+    // auto SOTM
+    public void setSOTM(boolean enabled) {
+        if (enabled) {
+            aimController.reset(getRotation().getRadians());
+            
+            PPHolonomicDriveController.overrideRotationFeedback(() -> {
+                Pose2d currentPose = getPose();
+                Rotation2d targetAngle = ShooterCalculator.getTargetRotation(
+                    currentPose, 
+                    getFieldRelativeSpeeds()
+                );
+
+                return aimController.calculate(
+                    currentPose.getRotation().getRadians(), 
+                    targetAngle.getRadians()
+                );
+            });
+        } else {
+            PPHolonomicDriveController.clearRotationFeedbackOverride();
+        }
+    }
+
+    public Command enableSOTM() {
+        return runOnce(() -> setSOTM(true)).withName("EnableSOTM");
+    }
+
+    public Command disableSOTM() {
+        return runOnce(() -> setSOTM(false)).withName("DisableSOTM");
     }
 }
