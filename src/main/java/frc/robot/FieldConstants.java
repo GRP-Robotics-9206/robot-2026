@@ -42,6 +42,12 @@ public class FieldConstants {
         public static final Distance RED_X = FIELD_LENGTH.minus(BLUE_X);
         public static final Translation2d RED_TRENCH_CENTER = new Translation2d(RED_X, TRENCH_WIDTH_Y.div(2));
 
+        public static final Distance TRENCH_NEAR_X = BLUE_X.minus(LENGTH_X.div(2)).minus(Inches.of(25));
+        public static final Distance TRENCH_FAR_X = BLUE_X.plus(LENGTH_X.div(2)).plus(Inches.of(25));
+
+        public static final Translation2d BLUE_BOTTOM_NEAR = new Translation2d(TRENCH_NEAR_X, TRENCH_WIDTH_Y.div(2));
+        public static final Translation2d BLUE_BOTTOM_FAR = new Translation2d(TRENCH_FAR_X, TRENCH_WIDTH_Y.div(2));
+
         public static Distance getActiveX() {
             return isRed() ? RED_X : BLUE_X;
         }

@@ -13,11 +13,21 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Seconds;
+import static frc.robot.subsystems.vision.VisionConstants.camera0Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
+
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -25,15 +35,32 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.*;
-import frc.robot.subsystems.drive.*;
-import frc.robot.subsystems.intake.*;
-import frc.robot.subsystems.kicker.*;
-import frc.robot.subsystems.shooter.*;
-import frc.robot.subsystems.vision.*;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
-import static frc.robot.subsystems.vision.VisionConstants.*;
+import frc.robot.commands.DriveCommands;
+import frc.robot.commands.IntakeCommands;
+import frc.robot.commands.ShootingCommands;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIONavX;
+import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOSpark;
+import frc.robot.subsystems.kicker.Kicker;
+import frc.robot.subsystems.kicker.KickerIO;
+import frc.robot.subsystems.kicker.KickerIOSim;
+import frc.robot.subsystems.kicker.KickerIOSpark;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOSim;
+import frc.robot.subsystems.shooter.ShooterIOSpark;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.util.Zones;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -150,6 +177,9 @@ public class RobotContainer {
 
         // Configure the button bindings
         configureButtonBindings();
+
+        // Zones
+        configueZones();
     }
 
     /**
@@ -208,6 +238,21 @@ public class RobotContainer {
                 kicker.eject(),
                 shooter.stop()
             )
+        );
+    }
+
+    private void configueZones() {
+        Zones.logAllZones();
+
+        Zones.TRENCH_ZONES.willContain(drive::getPose, drive::getFieldRelativeSpeeds, Seconds.of(0.25))
+        .and(() -> Math.abs(controller.getLeftX()) > 0.5 || Math.abs(controller.getLeftY()) > 0.5)
+        .onTrue(
+            Commands.deferredProxy(() -> 
+                AutoBuilder.pathfindToPose(
+                    Zones.TrenchTargets.getTargetPose(drive.getPose()),
+                    new PathConstraints(4.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))
+                )
+            ).withName("AutoTrenchShuttle")
         );
     }
 
