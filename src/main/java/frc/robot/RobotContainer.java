@@ -14,6 +14,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -128,6 +130,12 @@ public class RobotContainer {
                 kicker = new Kicker(new KickerIO() {});
                 break;
         }
+        
+        // Setup named commands for pathplanner
+        NamedCommands.registerCommand("IntakeBall", IntakeCommands.intake(intake));
+        NamedCommands.registerCommand("SafeStow", IntakeCommands.safeStow(intake));
+        NamedCommands.registerCommand("AimAndSpool", ShootingCommands.aimAndSpool(drive, shooter, () -> 0.0, () -> 0.0));
+        NamedCommands.registerCommand("Kick", ShootingCommands.kick(kicker, shooter).withTimeout(0.5));
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
