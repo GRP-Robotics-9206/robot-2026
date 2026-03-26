@@ -84,4 +84,12 @@ public class ShooterCalculator {
         ShotData data = calculateMovingShot(robotPose, fieldRelativeSpeeds);
         return data.aimPoint().minus(robotPose.getTranslation()).getAngle();
     }
+
+    public static double getMinTOF() {
+        return tofMap.get(DIST_NEAR);
+    }
+
+    public static double getMaxTOF() {
+        return tofMap.get(DIST_FAR);
+    }
 }

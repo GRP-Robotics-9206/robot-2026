@@ -9,6 +9,7 @@ package frc.robot.util;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.subsystems.shooter.ShooterCalculator;
 import edu.wpi.first.wpilibj.Timer;
 
 public class HubShiftUtil {
@@ -35,8 +36,8 @@ public class HubShiftUtil {
   private static final double minFuelCountDelay = 1.0;
   private static final double maxFuelCountDelay = 2.0;
   private static final double shiftEndFuelCountExtension = 3.0;
-  private static final double minTimeOfFlight = 0.4;
-  private static final double maxTimeOfFlight = 1.2;
+  private static final double minTimeOfFlight = ShooterCalculator.getMinTOF();
+  private static final double maxTimeOfFlight = ShooterCalculator.getMaxTOF();
   private static final double approachingActiveFudge = -1 * (minTimeOfFlight + minFuelCountDelay);
   private static final double endingActiveFudge =
       shiftEndFuelCountExtension + -1 * (maxTimeOfFlight + maxFuelCountDelay);
