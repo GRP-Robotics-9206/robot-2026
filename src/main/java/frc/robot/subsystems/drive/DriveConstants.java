@@ -72,10 +72,10 @@ public class DriveConstants {
     public static final double driveKd = 0.0;
     public static final double driveKs = 0.09355;
     public static final double driveKv = 0.13127; // Comes from Simple FF auto
-    public static final double driveSimP = 0.05;
+    public static final double driveSimP = 2.0;
     public static final double driveSimD = 0.0;
-    public static final double driveSimKs = 0.0;
-    public static final double driveSimKv = 0.0789;
+    public static final double driveSimKs = 0.01195; // Comes from Simple FF auto
+    public static final double driveSimKv = 0.11209;
 
     // Turn motor configuration
     public static final boolean turnInverted = false;
@@ -91,7 +91,7 @@ public class DriveConstants {
     // Turn PID configuration
     public static final double turnKp = 0.411;
     public static final double turnKd = 0.1;
-    public static final double turnSimP = 8.0;
+    public static final double turnSimP = 15.0;
     public static final double turnSimD = 0.0;
     public static final double turnPIDMinInput = 0; // Radians
     public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
