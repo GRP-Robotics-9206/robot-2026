@@ -8,7 +8,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-
 import static frc.robot.subsystems.shooter.ShooterConstants.*;
 
 public class ShooterIOSpark implements ShooterIO {
@@ -17,7 +16,7 @@ public class ShooterIOSpark implements ShooterIO {
     public ShooterIOSpark() {
         SparkMaxConfig config = new SparkMaxConfig();
 
-        config.encoder.velocityConversionFactor(0.104719755);
+        config.encoder.velocityConversionFactor(motorRotationsRadPerSec * gearRatio);
         config.smartCurrentLimit(50);
 
         flywheelSpark = new SparkMax(flywheelCanID, MotorType.kBrushless);
