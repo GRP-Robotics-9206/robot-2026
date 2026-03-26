@@ -14,6 +14,10 @@
 package frc.robot;
 
 import com.revrobotics.util.StatusLogger;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.util.HubShiftUtil;
@@ -103,6 +107,9 @@ public class Robot extends LoggedRobot {
 
         // Return to non-RT thread priority (do not modify the first argument)
         // Threads.setCurrentThreadPriority(false, 10);
+
+        // Update Dashbord
+        robotContainer.updateDashboard();
 
         // Log hub state
         Logger.recordOutput("HubShift/Official", HubShiftUtil.getOfficialShiftInfo());
