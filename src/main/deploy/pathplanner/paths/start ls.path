@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.395,
-        "y": 5.936
+        "x": 3.547878761574074,
+        "y": 7.450618706597222
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6526042071549718,
-        "y": 5.939773139203966
+        "x": 4.547878761574074,
+        "y": 7.450618706597222
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.795,
-        "y": 5.936
+        "x": 5.951848668981481,
+        "y": 7.450618706597222
       },
       "prevControl": {
-        "x": 0.5420102962916498,
-        "y": 5.930327370185959
+        "x": 4.951848668981481,
+        "y": 7.450618706597222
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,24 +33,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Intake",
+      "name": "Setup",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "IntakeBall"
-        }
-      }
-    },
-    {
-      "name": "StopIntake",
-      "waypointRelativePos": 1.0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "StopIntake"
+          "name": "Setup"
         }
       }
     }
@@ -64,14 +53,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 180.0
+    "velocity": 2.0,
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Center Outpost ",
+  "folder": "Left Trench Swipe",
   "idealStartingState": {
-    "velocity": 1.0,
-    "rotation": 180.0
+    "velocity": 0,
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

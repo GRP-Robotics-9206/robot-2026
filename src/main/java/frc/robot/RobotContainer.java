@@ -164,7 +164,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("AutoSpool", ShootingCommands.autoSpool(drive, shooter));
         NamedCommands.registerCommand("Kick", ShootingCommands.autoKick(kicker, shooter));  
         NamedCommands.registerCommand("StopKick", kicker.stop());   
-        NamedCommands.registerCommand("StopShooter", shooter.stop());       
+        NamedCommands.registerCommand("StopShooter", shooter.stop());   
+        NamedCommands.registerCommand("StopIntake", intake.stop());   
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

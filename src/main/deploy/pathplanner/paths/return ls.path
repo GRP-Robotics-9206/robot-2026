@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 7.775,
-        "y": 3.28
+        "y": 4.745
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.775,
-        "y": 1.9200473122890613
+        "x": 7.761321542245371,
+        "y": 5.083128255208333
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.054546575956938,
-        "y": 2.7329731110446573
+        "x": 2.757206235532408,
+        "y": 5.20391724537037
       },
       "prevControl": {
-        "x": 3.544855026415471,
-        "y": 2.6466874127791074
+        "x": 3.4253838975694446,
+        "y": 5.852739800347222
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,15 +30,15 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5601390067911719,
-      "rotationDegrees": 45.0
+      "waypointRelativePos": 0.5616416760089686,
+      "rotationDegrees": -45.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.39625553474114467,
-      "maxWaypointRelativePos": 0.7960660762942778,
+      "minWaypointRelativePos": 0.3036976328337875,
+      "maxWaypointRelativePos": 0.799674301771117,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 3.0,
@@ -53,7 +53,7 @@
   "eventMarkers": [
     {
       "name": "Spool",
-      "waypointRelativePos": 0.3253446691176472,
+      "waypointRelativePos": 0.29782229223433226,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -64,7 +64,7 @@
     },
     {
       "name": "lock",
-      "waypointRelativePos": 0.6915900735294122,
+      "waypointRelativePos": 0.6529610865122609,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -84,13 +84,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 50.50949762711718
+    "rotation": -28.575073002198273
   },
   "reversed": false,
-  "folder": "Right Trench Swipe",
+  "folder": "Left Trench Swipe",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }
