@@ -4,6 +4,8 @@ import frc.robot.util.TunableControls.TunableControlConstants;
 import frc.robot.util.TunableControls.TunablePIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.subsystems.shooter.ShooterConstants.*;
@@ -11,9 +13,12 @@ import static frc.robot.subsystems.shooter.ShooterConstants.*;
 public class Shooter extends SubsystemBase {
     private final ShooterIO io;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
-
-    private ShooterState state = ShooterState.IDLE;
     private final TunablePIDController controller;
+
+    @AutoLogOutput(key = "Shooter/State")
+    private ShooterState state = ShooterState.IDLE;
+
+    @AutoLogOutput(key = "Shooter/TargetVelocity")
     private double targetVelocity = 0.0;
 
     public Shooter(ShooterIO io) {
@@ -54,6 +59,7 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Shooter", inputs);
+        Logger.recordOutput("Shooter/IsReady", atSetpoint());
 
         switch (state) {
             case IDLE -> {

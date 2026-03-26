@@ -1,5 +1,6 @@
 package frc.robot.subsystems.kicker;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -8,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Kicker extends SubsystemBase {
     private final KickerIO io;
     private final KickerIOInputsAutoLogged inputs = new KickerIOInputsAutoLogged();
+    
+    @AutoLogOutput(key = "Kicker/State")
     private KickerState state = KickerState.IDLE;
 
     public Kicker(KickerIO io) {

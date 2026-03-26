@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -8,6 +9,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Intake extends SubsystemBase {
     private final IntakeIO io;
     private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+    
+    
+    @AutoLogOutput(key = "Intake/State")
     private IntakeState state = IntakeState.STOWED;
 
     private final Debouncer stallDebouncer = new Debouncer(0.1);
