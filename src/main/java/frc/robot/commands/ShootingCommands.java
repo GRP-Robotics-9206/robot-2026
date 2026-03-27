@@ -76,11 +76,11 @@ public class ShootingCommands {
     public static Command kick(Kicker kicker, Shooter shooter) {
         return Commands.run(
             () -> {
-                if (shooter.atSetpoint()) {
-                    kicker.run();
-                } else {
-                    kicker.stop();
-                }
+                //if (shooter.atSetpoint()) {
+                    kicker.run().schedule();
+                //} else 
+                //    kicker.stop();
+                //}
             }, 
             kicker
         ).finallyDo(kicker::stop);

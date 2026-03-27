@@ -30,6 +30,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command stop() {
+        this.targetVelocity = 0.0;
         return setGoalState(ShooterState.IDLE).withName("Stop");
     }
 
@@ -44,7 +45,6 @@ public class Shooter extends SubsystemBase {
 
     public void setTargetVelocity(double velocity) {
         this.targetVelocity = velocity;
-        this.state = ShooterState.SPOOLING; 
     }
 
     public Boolean atSetpoint() {
@@ -61,21 +61,28 @@ public class Shooter extends SubsystemBase {
         Logger.processInputs("Shooter", inputs);
         Logger.recordOutput("Shooter/IsReady", atSetpoint());
 
+        double error = Math.abs(inputs.velocityRadPerSec - targetVelocity);
+
         switch (state) {
             case IDLE -> {
                 io.setVoltage(0.0);
+                if (this.targetVelocity > 0.1) state = ShooterState.SPOOLING;
             }
 
             case SPOOLING -> {
                 runFlywheel(targetVelocity);
                 
-                if (Math.abs(inputs.velocityRadPerSec - targetVelocity) < 2.0) {
+                if (error < 4.0) {
                     state = ShooterState.READY;
                 }
             }
 
             case READY -> {
                 runFlywheel(targetVelocity);
+
+                if (Math.abs(inputs.velocityRadPerSec - targetVelocity) > 12.0) {
+                    state = ShooterState.SPOOLING;
+                }
             }
 
             case EJECTING -> {
