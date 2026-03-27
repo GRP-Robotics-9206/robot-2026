@@ -73,13 +73,17 @@ public class ShootingCommands {
      * Shoots the kicker forward while the shooter is at its setpoint. 
      * This should be used in conjunction with aimAndSpool, which aims the robot
      */
-    public static Command kick(
-        Kicker kicker,
-        Shooter shooter
-    ) {
-        return kicker.run()
-            .onlyIf(shooter::atSetpoint)
-            .finallyDo(kicker::stop);
+    public static Command kick(Kicker kicker, Shooter shooter) {
+        return Commands.run(
+            () -> {
+                if (shooter.atSetpoint()) {
+                    kicker.run();
+                } else {
+                    kicker.stop();
+                }
+            }, 
+            kicker
+        ).finallyDo(kicker::stop);
     }
 
     public static Command autoKick(
