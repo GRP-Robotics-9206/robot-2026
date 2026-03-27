@@ -174,12 +174,14 @@ public class RobotContainer {
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
         // Set up SysId routines
+        /*
         autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
         autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
         autoChooser.addOption("Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
         autoChooser.addOption("Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
         autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
         autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        */
 
         // Configure the button bindings
         configureButtonBindings();
@@ -207,6 +209,8 @@ public class RobotContainer {
             )
         );
 
+        shooter.setDefaultCommand(shooter.stop());
+
         // Switch to X pattern when X button is pressed
         controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
@@ -218,6 +222,7 @@ public class RobotContainer {
         );
 
         // Aim and shoot when left trigger is held
+        
         controller.leftTrigger().whileTrue(
             ShootingCommands.aimAndSpool(
                 drive, 
@@ -228,11 +233,10 @@ public class RobotContainer {
         );
 
         // Actually Shoot when right trigger is held (after spooling up)
-        /*
         controller.rightTrigger().whileTrue(
-            ShootingCommands.kick(kicker, shooter)
-        );
-        */
+            kicker.run().onlyIf(shooter::atSetpoint)
+        ).whileFalse(kicker.stop());
+        
 
         // Intake when right bumper is held
         /*

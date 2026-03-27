@@ -44,8 +44,8 @@ public class ShootingCommands {
                     angleController
                 );
 
-                drive.runVelocity(aimSpeeds);
-                //shooter.setTargetVelocity(shotData.velocity());
+                //drive.runVelocity(aimSpeeds);
+                shooter.setTargetVelocity(shotData.velocity());
             },
             drive, shooter
         )
@@ -67,23 +67,6 @@ public class ShootingCommands {
             },
             shooter
         ).withName("AutoSpool");
-    }
-
-    /**
-     * Shoots the kicker forward while the shooter is at its setpoint. 
-     * This should be used in conjunction with aimAndSpool, which aims the robot
-     */
-    public static Command kick(Kicker kicker, Shooter shooter) {
-        return Commands.run(
-            () -> {
-                //if (shooter.atSetpoint()) {
-                    kicker.run().schedule();
-                //} else 
-                //    kicker.stop();
-                //}
-            }, 
-            kicker
-        ).finallyDo(() -> { kicker.stop().schedule(); });
     }
 
     public static Command autoKick(
