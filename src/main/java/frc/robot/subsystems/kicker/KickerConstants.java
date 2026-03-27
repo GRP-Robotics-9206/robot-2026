@@ -1,5 +1,5 @@
 package frc.robot.subsystems.kicker;
 
 public class KickerConstants {
-    public static final int kickerCanID = 15;
+    public static final int kickerCanID = 12;
 }

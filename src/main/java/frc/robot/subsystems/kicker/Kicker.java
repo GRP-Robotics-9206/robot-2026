@@ -28,11 +28,11 @@ public class Kicker extends SubsystemBase {
             }
 
             case KICKING -> {
-                io.setVoltage(10.0);
+                io.setVoltage(-5.0);
             }
 
             case EJECTING -> {
-                io.setVoltage(-5.0);
+                io.setVoltage(5.0);
             }
         }
 

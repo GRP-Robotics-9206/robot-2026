@@ -20,8 +20,8 @@ public class ShooterCalculator {
     private static final double DIST_FAR = 5.0;
 
     private static final LoggedTunableNumber nearVel = new LoggedTunableNumber("Shooter/NearVel", 150.0);
-    private static final LoggedTunableNumber midVel = new LoggedTunableNumber("Shooter/MidVel", 350.0);
-    private static final LoggedTunableNumber farVel = new LoggedTunableNumber("Shooter/FarVel", 480.0);
+    private static final LoggedTunableNumber midVel = new LoggedTunableNumber("Shooter/MidVel", 320.0);
+    private static final LoggedTunableNumber farVel = new LoggedTunableNumber("Shooter/FarVel", 430.0);
 
     private static final LoggedTunableNumber nearTOF = new LoggedTunableNumber("Shooter/NearTOF", 0.4);
     private static final LoggedTunableNumber midTOF = new LoggedTunableNumber("Shooter/MidTOF", 0.8);

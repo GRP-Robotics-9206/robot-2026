@@ -76,7 +76,7 @@ public class RobotContainer {
     // Subsystems
     private final Drive drive;
     private final Vision vision;
-    private final Intake intake;
+    //private final Intake intake;
     private final Shooter shooter;
     private final Kicker kicker;
 
@@ -111,7 +111,7 @@ public class RobotContainer {
                     new VisionIOPhotonVision(camera1Name, robotToCamera1)
                 );
 
-                intake = new Intake(new IntakeIOSpark());
+                //intake = new Intake(new IntakeIOSpark());
                 shooter = new Shooter(new ShooterIOSpark());
                 kicker = new Kicker(new KickerIOSpark ());
                 break;
@@ -132,7 +132,7 @@ public class RobotContainer {
                     new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose)
                 );
 
-                intake = new Intake(new IntakeIOSim());
+                //intake = new Intake(new IntakeIOSim());
                 shooter = new Shooter(new ShooterIOSim());
                 kicker = new Kicker(new KickerIOSim());
                 break;
@@ -153,22 +153,22 @@ public class RobotContainer {
                     new VisionIO() {}
                 );
 
-                intake = new Intake(new IntakeIO() {});
+                //intake = new Intake(new IntakeIO() {});
                 shooter = new Shooter(new ShooterIO() {});
                 kicker = new Kicker(new KickerIO() {});
                 break;
         }
         
         // Setup named commands for pathplanner
-        NamedCommands.registerCommand("Setup", IntakeCommands.setup(intake));
-        NamedCommands.registerCommand("IntakeBall", IntakeCommands.intake(intake));
+        //NamedCommands.registerCommand("Setup", IntakeCommands.setup(intake));
+        //NamedCommands.registerCommand("IntakeBall", IntakeCommands.intake(intake));
         NamedCommands.registerCommand("EnableSOTM", ShootingCommands.enableSOTM(drive));
         NamedCommands.registerCommand("DisableSOTM", ShootingCommands.disableSOTM(drive));
         NamedCommands.registerCommand("AutoSpool", ShootingCommands.autoSpool(drive, shooter));
         NamedCommands.registerCommand("Kick", ShootingCommands.autoKick(kicker, shooter));  
         NamedCommands.registerCommand("StopKick", kicker.stop());   
         NamedCommands.registerCommand("StopShooter", shooter.stop());   
-        NamedCommands.registerCommand("StopIntake", intake.stop());   
+        //NamedCommands.registerCommand("StopIntake", intake.stop());   
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -233,14 +233,16 @@ public class RobotContainer {
         );
 
         // Intake when right bumper is held
+        /*
         controller.rightBumper().whileTrue(
             IntakeCommands.intake(intake)
         );
+        */
 
         // Panic Button: Eject everything when left bumper is held
         controller.start().whileTrue(
             Commands.parallel(
-                intake.eject(),
+                //intake.eject(),
                 kicker.eject(),
                 shooter.stop()
             )
