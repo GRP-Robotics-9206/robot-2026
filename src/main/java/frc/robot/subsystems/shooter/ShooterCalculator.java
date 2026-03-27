@@ -27,6 +27,8 @@ public class ShooterCalculator {
     private static final LoggedTunableNumber midTOF = new LoggedTunableNumber("Shooter/MidTOF", 0.8);
     private static final LoggedTunableNumber farTOF = new LoggedTunableNumber("Shooter/FarTOF", 1.2);
 
+    private static final Translation2d SHOOTER_OFFSET = new Translation2d(-0.25, 0.0);
+
 
     private static void updateMaps() {
         LoggedTunableNumber.ifChanged(0, () -> {
@@ -44,7 +46,7 @@ public class ShooterCalculator {
         }, nearVel, midVel, farVel, nearTOF, midTOF, farTOF);
     }
 
-    public record ShotData(double velocity, double timeOfFlight, Translation2d aimPoint) {}
+    public record ShotData(double velocity, double timeOfFlight, Translation2d aimPoint, Translation2d shooterLocation) {}
 
     /**
      * Calculates the best shot while the robot is moving.
@@ -52,23 +54,33 @@ public class ShooterCalculator {
     public static ShotData calculateMovingShot(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds) {
         updateMaps();
         
+        Translation2d shooterLocation = robotPose.getTranslation().plus(
+            SHOOTER_OFFSET.rotateBy(robotPose.getRotation())
+        );
+        
+        double tangentialVx = -fieldRelativeSpeeds.omegaRadiansPerSecond * SHOOTER_OFFSET.getY();
+        double tangentialVy = fieldRelativeSpeeds.omegaRadiansPerSecond * SHOOTER_OFFSET.getX();
+        
+        double effectiveVx = fieldRelativeSpeeds.vxMetersPerSecond + tangentialVx;
+        double effectiveVy = fieldRelativeSpeeds.vyMetersPerSecond + tangentialVy;
+
         Translation3d staticTarget = FieldConstants.Hub.getTarget();
         Translation2d currentTarget = staticTarget.toTranslation2d();
-        
-        double distance = robotPose.getTranslation().getDistance(currentTarget);
+    
+        double distance = shooterLocation.getDistance(currentTarget);
         double tof = tofMap.get(distance);
         Translation2d predictedTarget = currentTarget;
 
         // Iterative lookahead: Predict where the target is "moving" relative to the robot
         // This compensates for the ball's travel time.
         for (int i = 0; i < 4; i++) {
-            double offsetX = fieldRelativeSpeeds.vxMetersPerSecond * tof;
-            double offsetY = fieldRelativeSpeeds.vyMetersPerSecond * tof;
+            double offsetX = effectiveVx * tof;
+            double offsetY = effectiveVy * tof;
             
             // We subtract the robot's movement from the target's relative position
             predictedTarget = currentTarget.minus(new Translation2d(offsetX, offsetY));
             
-            distance = robotPose.getTranslation().getDistance(predictedTarget);
+            distance = shooterLocation.getDistance(predictedTarget);
             tof = tofMap.get(distance);
         }
 
@@ -77,12 +89,12 @@ public class ShooterCalculator {
         Logger.recordOutput("Shooter/PredictedTarget", new Translation3d(predictedTarget.getX(), predictedTarget.getY(), staticTarget.getZ()));
         Logger.recordOutput("Shooter/EffectiveDistance", distance);
 
-        return new ShotData(targetVelocity, tof, predictedTarget);
+        return new ShotData(targetVelocity, tof, predictedTarget, shooterLocation);
     }
 
     public static Rotation2d getTargetRotation(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds) {
         ShotData data = calculateMovingShot(robotPose, fieldRelativeSpeeds);
-        return data.aimPoint().minus(robotPose.getTranslation()).getAngle();
+        return data.aimPoint().minus(data.shooterLocation()).getAngle();
     }
 
     public static double getMinTOF() {
