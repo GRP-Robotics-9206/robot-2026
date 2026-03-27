@@ -228,9 +228,11 @@ public class RobotContainer {
         );
 
         // Actually Shoot when right trigger is held (after spooling up)
+        /*
         controller.rightTrigger().whileTrue(
             ShootingCommands.kick(kicker, shooter)
         );
+        */
 
         // Intake when right bumper is held
         /*

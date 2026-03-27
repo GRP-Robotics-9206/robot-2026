@@ -45,7 +45,7 @@ public class ShootingCommands {
                 );
 
                 drive.runVelocity(aimSpeeds);
-                shooter.setTargetVelocity(shotData.velocity());
+                //shooter.setTargetVelocity(shotData.velocity());
             },
             drive, shooter
         )
@@ -83,7 +83,7 @@ public class ShootingCommands {
                 //}
             }, 
             kicker
-        ).finallyDo(kicker::stop);
+        ).finallyDo(() -> { kicker.stop().schedule(); });
     }
 
     public static Command autoKick(

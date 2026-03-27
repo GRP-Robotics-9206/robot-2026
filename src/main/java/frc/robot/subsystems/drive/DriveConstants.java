@@ -35,10 +35,17 @@ public class DriveConstants {
         };
 
     // Zeroed rotation values for each module, see setup instructions
+    /*
     public static final Rotation2d frontLeftZeroRotation = new Rotation2d(0.177);
     public static final Rotation2d frontRightZeroRotation = new Rotation2d(2.722);
     public static final Rotation2d backLeftZeroRotation = new Rotation2d(-2.970);
     public static final Rotation2d backRightZeroRotation = new Rotation2d(-1.819);
+    */
+
+    public static final Rotation2d frontLeftZeroRotation = new Rotation2d(-3.063);
+    public static final Rotation2d frontRightZeroRotation = new Rotation2d(-0.410);
+    public static final Rotation2d backLeftZeroRotation = new Rotation2d(0.009);
+    public static final Rotation2d backRightZeroRotation = new Rotation2d(1.351);
 
     // Device CAN IDs
     public static final int frontRightDriveCanId = 8;
@@ -70,8 +77,8 @@ public class DriveConstants {
     // Drive PID configuration
     public static final double driveKp = 0.006;
     public static final double driveKd = 0.0;
-    public static final double driveKs = 0.09355;
-    public static final double driveKv = 0.13127; // Comes from Simple FF auto
+    public static final double driveKs = 0.21546;
+    public static final double driveKv = 0.14285; // Comes from Simple FF auto
     public static final double driveSimP = 2.0;
     public static final double driveSimD = 0.0;
     public static final double driveSimKs = 0.01195; // Comes from Simple FF auto
@@ -97,8 +104,8 @@ public class DriveConstants {
     public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
 
     // PathPlanner configuration
-    public static final double robotMassKg = 74.088;
-    public static final double robotMOI = 6.883;
+    public static final double robotMassKg = 51.7;
+    public static final double robotMOI = 4.05;
     public static final double wheelCOF = 1.2;
     public static final RobotConfig ppConfig =
         new RobotConfig(
