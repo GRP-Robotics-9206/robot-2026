@@ -1,0 +1,93 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.506,
+        "y": 0.637
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.5060000000000004,
+        "y": 0.637
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.7112620907738094,
+        "y": 3.914893740699405
+      },
+      "prevControl": {
+        "x": 1.7112620907738094,
+        "y": 3.914893740699405
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 43.7399838289549
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Spool",
+      "waypointRelativePos": 0.3110763097949884,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "AutoSpool"
+        }
+      }
+    },
+    {
+      "name": "lock",
+      "waypointRelativePos": 0.507643436788155,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "EnableSOTM"
+        }
+      }
+    },
+    {
+      "name": "Kick",
+      "waypointRelativePos": 0.7837592539863327,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Kick"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Center Human",
+  "idealStartingState": {
+    "velocity": 180.0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}
