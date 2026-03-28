@@ -330,10 +330,13 @@ public class DriveCommands {
             omega
         );
 
+        /*
         boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
         return ChassisSpeeds.fromFieldRelativeSpeeds(
             fieldSpeeds,
             isRed ? drive.getRotation().plus(Rotation2d.kPi) : drive.getRotation()
         );
+        */
+        return ChassisSpeeds.fromFieldRelativeSpeeds(fieldSpeeds, drive.getRotation());
     }
 }

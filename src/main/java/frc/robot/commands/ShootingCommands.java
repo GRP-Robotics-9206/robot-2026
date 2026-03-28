@@ -13,6 +13,11 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterCalculator;
 
 public class ShootingCommands {
+    private static final double ANGLE_KP = 3.0;
+    private static final double ANGLE_KD = 0.1;
+    private static final double ANGLE_MAX_VELOCITY = 8.0;
+    private static final double ANGLE_MAX_ACCELERATION = 20.0;
+
     /**
      * Creates a command that simultaneously aims the drivetrain toward a computed shot aim point
      * and spools the shooter to the velocity required for that moving shot.
@@ -23,10 +28,13 @@ public class ShootingCommands {
         DoubleSupplier xSupplier,
         DoubleSupplier ySupplier
     ) {
-        ProfiledPIDController angleController = new ProfiledPIDController(
-            5.0, 0.0, 0.4, 
-            new TrapezoidProfile.Constraints(8.0, 20.0)
-        );
+        ProfiledPIDController angleController =
+            new ProfiledPIDController(
+                ANGLE_KP,
+                0.0,
+                ANGLE_KD,
+                new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION)
+            );
         angleController.enableContinuousInput(-Math.PI, Math.PI);
 
         return Commands.run(
@@ -44,7 +52,7 @@ public class ShootingCommands {
                     angleController
                 );
 
-                //drive.runVelocity(aimSpeeds);
+                drive.runVelocity(aimSpeeds);
                 shooter.setTargetVelocity(shotData.velocity());
             },
             drive, shooter
