@@ -1,0 +1,78 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.701,
+        "y": 3.556
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.844859154929578,
+        "y": 2.7255985915492964
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.0323943661971837,
+        "y": 3.0769014084507047
+      },
+      "prevControl": {
+        "x": 2.521408450704226,
+        "y": 2.230580985915493
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5758241758241756,
+      "rotationDegrees": 45.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Spool",
+      "waypointRelativePos": 0.48936170212765945,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "lock",
+      "waypointRelativePos": 0.6861702127659587,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 0.8058510638297862,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 31.328692867804147
+  },
+  "reversed": false,
+  "folder": "Right Trench Swipe",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 45.0
+  },
+  "useDefaultConstraints": true
+}

@@ -3,45 +3,57 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.547878761574074,
-        "y": 7.450618706597222
+        "x": 9.052,
+        "y": 4.642
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.547878761574074,
-        "y": 7.450618706597222
+        "x": 7.902728873239436,
+        "y": 4.833415492957747
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.951848668981481,
-        "y": 7.450618706597222
+        "x": 3.0323943661971837,
+        "y": 4.97713028169014
       },
       "prevControl": {
-        "x": 4.951848668981481,
-        "y": 7.450618706597222
+        "x": 3.575316901408451,
+        "y": 6.765580985915493
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6497584541062805,
+      "rotationDegrees": -45.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Setup",
-      "waypointRelativePos": 0,
+      "name": "Spool",
+      "waypointRelativePos": 0.4537313432835822,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Setup"
-        }
-      }
+      "command": null
+    },
+    {
+      "name": "EnableSOTM",
+      "waypointRelativePos": 0.8000000000000004,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 0.8865671641791047,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {
@@ -53,14 +65,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 3.0,
-    "rotation": 0.0
+    "velocity": 0,
+    "rotation": -36.889433435780774
   },
   "reversed": false,
   "folder": "Left Trench Swipe",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -45.0
   },
   "useDefaultConstraints": true
 }

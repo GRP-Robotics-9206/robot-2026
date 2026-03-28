@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.547878761574074,
-        "y": 7.450618706597222
+        "x": 9.436,
+        "y": 6.702
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.547878761574074,
-        "y": 7.450618706597222
+        "x": 9.199107604530806,
+        "y": 5.451596656186048
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.951848668981481,
-        "y": 7.450618706597222
+        "x": 9.052447183098591,
+        "y": 4.641795774647887
       },
       "prevControl": {
-        "x": 4.951848668981481,
-        "y": 7.450618706597222
+        "x": 9.160555051803104,
+        "y": 5.201234048746153
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,19 +31,7 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Setup",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Setup"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -53,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 3.0,
-    "rotation": 0.0
+    "velocity": 0,
+    "rotation": -45.0
   },
   "reversed": false,
   "folder": "Left Trench Swipe",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 2.0,
+    "rotation": -45.0
   },
   "useDefaultConstraints": true
 }

@@ -234,7 +234,7 @@ public class RobotContainer {
 
         // Actually Shoot when right trigger is held (after spooling up)
         controller.rightTrigger().whileTrue(
-            kicker.run().onlyIf(shooter::atSetpoint)
+            kicker.run()//.onlyIf(shooter::atSetpoint)
         ).whileFalse(kicker.stop());
         
 
