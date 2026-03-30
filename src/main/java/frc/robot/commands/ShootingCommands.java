@@ -52,7 +52,7 @@ public class ShootingCommands {
                     angleController
                 );
 
-                drive.runVelocity(aimSpeeds);
+                //drive.runVelocity(aimSpeeds);
                 shooter.setTargetVelocity(shotData.velocity());
             },
             drive, shooter
