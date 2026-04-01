@@ -38,17 +38,6 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Spool",
-      "waypointRelativePos": 0.14214207848837218,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "AutoSpool"
-        }
-      }
-    },
-    {
       "name": "lock",
       "waypointRelativePos": 0.49623001453488386,
       "endWaypointRelativePos": null,
@@ -66,7 +55,7 @@
       "command": {
         "type": "named",
         "data": {
-          "name": "Kick"
+          "name": "AutoShoot"
         }
       }
     }

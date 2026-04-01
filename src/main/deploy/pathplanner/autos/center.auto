@@ -23,12 +23,6 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "StopKick"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
                   "name": "StopShooter"
                 }
               },

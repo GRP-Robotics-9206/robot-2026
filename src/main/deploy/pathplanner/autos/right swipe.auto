@@ -31,7 +31,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Kick"
+            "name": "AutoShoot"
           }
         },
         {
@@ -44,12 +44,6 @@
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopKick"
-                }
-              },
               {
                 "type": "named",
                 "data": {

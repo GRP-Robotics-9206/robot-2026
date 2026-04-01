@@ -52,17 +52,6 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Spool",
-      "waypointRelativePos": 0.29782229223433226,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "AutoSpool"
-        }
-      }
-    },
-    {
       "name": "lock",
       "waypointRelativePos": 0.6529610865122609,
       "endWaypointRelativePos": null,

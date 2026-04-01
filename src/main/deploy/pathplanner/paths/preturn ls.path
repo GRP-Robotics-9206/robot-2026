@@ -38,19 +38,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Spool",
-      "waypointRelativePos": 0.4537313432835822,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
       "name": "EnableSOTM",
       "waypointRelativePos": 0.8000000000000004,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "Shoot",
+      "name": "AutoShoot",
       "waypointRelativePos": 0.8865671641791047,
       "endWaypointRelativePos": null,
       "command": null

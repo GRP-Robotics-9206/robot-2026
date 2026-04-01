@@ -36,7 +36,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.IntakeCommands;
 import frc.robot.commands.ShootingCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -48,10 +47,6 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOSpark;
-import frc.robot.subsystems.kicker.Kicker;
-import frc.robot.subsystems.kicker.KickerIO;
-import frc.robot.subsystems.kicker.KickerIOSim;
-import frc.robot.subsystems.kicker.KickerIOSpark;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
@@ -76,9 +71,8 @@ public class RobotContainer {
     // Subsystems
     private final Drive drive;
     private final Vision vision;
-    //private final Intake intake;
+    private final Intake intake;
     private final Shooter shooter;
-    private final Kicker kicker;
 
     // Controller
     private final CommandXboxController controller = new CommandXboxController(0);
@@ -111,9 +105,8 @@ public class RobotContainer {
                     new VisionIOPhotonVision(camera1Name, robotToCamera1)
                 );
 
-                //intake = new Intake(new IntakeIOSpark());
+                intake = new Intake(new IntakeIOSpark());
                 shooter = new Shooter(new ShooterIOSpark());
-                kicker = new Kicker(new KickerIOSpark ());
                 break;
 
             case SIM:
@@ -132,9 +125,8 @@ public class RobotContainer {
                     new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose)
                 );
 
-                //intake = new Intake(new IntakeIOSim());
+                intake = new Intake(new IntakeIOSim());
                 shooter = new Shooter(new ShooterIOSim());
-                kicker = new Kicker(new KickerIOSim());
                 break;
 
             default:
@@ -153,23 +145,21 @@ public class RobotContainer {
                     new VisionIO() {}
                 );
 
-                //intake = new Intake(new IntakeIO() {});
+                intake = new Intake(new IntakeIO() {});
                 shooter = new Shooter(new ShooterIO() {});
-                kicker = new Kicker(new KickerIO() {});
                 break;
         }
         
         // Setup named commands for pathplanner
-        //NamedCommands.registerCommand("Setup", IntakeCommands.setup(intake));
-        //NamedCommands.registerCommand("IntakeBall", IntakeCommands.intake(intake));
+        NamedCommands.registerCommand("IntakeBall", intake.intake());
+        NamedCommands.registerCommand("StopIntake", intake.stop());  
+
         NamedCommands.registerCommand("EnableSOTM", ShootingCommands.enableSOTM(drive));
         NamedCommands.registerCommand("DisableSOTM", ShootingCommands.disableSOTM(drive));
-        NamedCommands.registerCommand("AutoSpool", ShootingCommands.autoSpool(drive, shooter));
-        NamedCommands.registerCommand("Kick", ShootingCommands.autoKick(kicker, shooter));  
-        NamedCommands.registerCommand("StopKick", kicker.stop());   
-        NamedCommands.registerCommand("StopShooter", shooter.stop());   
-        //NamedCommands.registerCommand("StopIntake", intake.stop());   
 
+        NamedCommands.registerCommand("AutoShoot", ShootingCommands.autoShoot(drive, shooter));
+        NamedCommands.registerCommand("StopShooter", shooter.stop());   
+         
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -222,35 +212,26 @@ public class RobotContainer {
         );
 
         // Aim and shoot when left trigger is held
-        
         controller.leftTrigger().whileTrue(
-            ShootingCommands.aimAndSpool(
+            ShootingCommands.aimAndShoot(
                 drive, 
                 shooter, 
                 () -> -controller.getLeftY(), 
                 () -> -controller.getLeftX()
             )
         );
-
-        // Actually Shoot when right trigger is held (after spooling up)
-        controller.rightTrigger().whileTrue(
-            kicker.run()//.onlyIf(shooter::atSetpoint)
-        ).whileFalse(kicker.stop());
         
-
-        // Intake when right bumper is held
-        /*
+        // Intake when right bumper is held     
         controller.rightBumper().whileTrue(
-            IntakeCommands.intake(intake)
-        );
-        */
+            intake.intake()
+        ).whileFalse(intake.stop());
+        
 
         // Panic Button: Eject everything when left bumper is held
         controller.start().whileTrue(
             Commands.parallel(
-                //intake.eject(),
-                kicker.eject(),
-                shooter.stop()
+                intake.eject(),
+                shooter.eject()
             )
         );
     }

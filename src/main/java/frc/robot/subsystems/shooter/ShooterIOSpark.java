@@ -12,26 +12,37 @@ import static frc.robot.subsystems.shooter.ShooterConstants.*;
 
 public class ShooterIOSpark implements ShooterIO {
     private SparkBase flywheelSpark;
+    private SparkBase kickerSpark;
 
     public ShooterIOSpark() {
-        SparkMaxConfig config = new SparkMaxConfig();
+        SparkMaxConfig fwConfig = new SparkMaxConfig();
+        fwConfig.encoder.velocityConversionFactor(motorRotationsRadPerSec * gearRatio);
+        fwConfig.smartCurrentLimit(50);
 
-        config.encoder.velocityConversionFactor(motorRotationsRadPerSec * gearRatio);
-        config.smartCurrentLimit(50);
+        SparkMaxConfig kickerConfig = new SparkMaxConfig();
+        kickerConfig.smartCurrentLimit(30);
 
         flywheelSpark = new SparkMax(flywheelCanID, MotorType.kBrushless);
-        flywheelSpark.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        flywheelSpark.configure(fwConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        kickerSpark = new SparkMax(kickerCanID, MotorType.kBrushless);
+        kickerSpark.configure(kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        inputs.velocityRadPerSec = flywheelSpark.getEncoder().getVelocity();
-        inputs.appliedVolts = flywheelSpark.getAppliedOutput() * flywheelSpark.getBusVoltage();
-        inputs.currentAmps = new double[] { flywheelSpark.getOutputCurrent() };
+        inputs.flywheelVelocityRadPerSec = flywheelSpark.getEncoder().getVelocity();
+        inputs.flywheelAppliedVolts = flywheelSpark.getAppliedOutput() * flywheelSpark.getBusVoltage();
+        inputs.flywheelCurrentAmps = flywheelSpark.getOutputCurrent();
+
+        inputs.kickerVelocityRadPerSec = kickerSpark.getEncoder().getVelocity() * 0.1047;
+        inputs.kickerAppliedVolts = kickerSpark.getAppliedOutput() * kickerSpark.getBusVoltage();
+        inputs.kickerCurrentAmps = kickerSpark.getOutputCurrent();
     }
 
     @Override
-    public void setVoltage(double volts) {
-        flywheelSpark.setVoltage(volts);
-    }
+    public void setFlywheelVoltage(double volts) { flywheelSpark.setVoltage(volts); }
+
+    @Override
+    public void setKickerVoltage(double volts) { kickerSpark.setVoltage(volts); }
 }

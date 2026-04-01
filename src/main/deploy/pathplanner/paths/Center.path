@@ -44,30 +44,6 @@
   ],
   "eventMarkers": [
     {
-      "name": "Setup",
-      "waypointRelativePos": 0.10235283430232565,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Setup"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "AutoSpool"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
       "name": "lock",
       "waypointRelativePos": 0.49777434593023195,
       "endWaypointRelativePos": null,
@@ -85,7 +61,7 @@
       "command": {
         "type": "named",
         "data": {
-          "name": "Kick"
+          "name": "AutoShoot"
         }
       }
     }

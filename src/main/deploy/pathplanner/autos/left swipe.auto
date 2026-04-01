@@ -31,7 +31,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Kick"
+            "name": "AutoShoot"
           }
         },
         {
@@ -48,12 +48,6 @@
                 "type": "named",
                 "data": {
                   "name": "DisableSOTM"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopKick"
                 }
               },
               {
