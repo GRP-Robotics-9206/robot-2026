@@ -17,7 +17,7 @@ public class ShootingCommands {
     private static final double ANGLE_KD = 0.1;
     private static final double ANGLE_MAX_VELOCITY = 8.0;
     private static final double ANGLE_MAX_ACCELERATION = 20.0;
-    private static final double PASS_VELOCITY = -300.0; 
+    private static final double PASS_VELOCITY = 300.0; 
 
     /**
      * Creates a command that simultaneously aims the drivetrain toward a computed shot aim point
