@@ -39,7 +39,7 @@ public class Shooter extends SubsystemBase {
         Logger.processInputs("Shooter", inputs);
 
         double error = Math.abs(inputs.flywheelVelocityRadPerSec - targetVelocity);
-        boolean atSpeed = error < 4.0 && targetVelocity > 0;
+        boolean atSpeed = error < 4.0 && targetVelocity != 0;
 
         switch (state) {
             case IDLE -> {
@@ -63,7 +63,7 @@ public class Shooter extends SubsystemBase {
             }
 
             case EJECTING -> {
-                io.setFlywheelVoltage(-4.0);
+                io.setFlywheelVoltage(4.0);
                 io.setKickerVoltage(5.0);
             }
         }

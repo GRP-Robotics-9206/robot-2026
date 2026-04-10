@@ -17,6 +17,7 @@ public class ShootingCommands {
     private static final double ANGLE_KD = 0.1;
     private static final double ANGLE_MAX_VELOCITY = 8.0;
     private static final double ANGLE_MAX_ACCELERATION = 20.0;
+    private static final double PASS_VELOCITY = -300.0; 
 
     /**
      * Creates a command that simultaneously aims the drivetrain toward a computed shot aim point
@@ -71,15 +72,14 @@ public class ShootingCommands {
                     drive.getPose(), 
                     drive.getFieldRelativeSpeeds()
                 );
-                shooter.shoot(shotData.velocity());
+                CommandScheduler.getInstance().schedule(shooter.shoot(shotData.velocity()));
             },
             shooter
         ).withName("AutoShoot");
     }
 
-    public static Command pass(Shooter shooter) {
-        final double PASS_VELOCITY = 300.0; 
-        return shooter.shoot(PASS_VELOCITY).finallyDo(() -> shooter.stop().schedule());
+    public static Command  pass(Shooter shooter) {
+        return shooter.shoot(PASS_VELOCITY);
     }
 
     public static Command enableSOTM(Drive drive) {

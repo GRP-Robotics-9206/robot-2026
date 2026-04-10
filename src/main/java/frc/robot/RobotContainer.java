@@ -229,7 +229,7 @@ public class RobotContainer {
         // Passing
         controller.leftTrigger().whileTrue(
             ShootingCommands.pass(shooter)
-        );
+        ).whileFalse(shooter.stop());
 
         // Panic Button: Eject everything when left bumper is held
         controller.leftBumper().whileTrue(
