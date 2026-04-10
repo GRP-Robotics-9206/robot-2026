@@ -56,14 +56,14 @@ public class Shooter extends SubsystemBase {
             case SHOOTING -> {
                 runFlywheel(targetVelocity);
                 if (error < 8.0) {
-                    io.setKickerVoltage(-6.0);
+                    io.setKickerVoltage(-12.0);
                 } else {
                     io.setKickerVoltage(0.0); // Wait for recovery
                 }
             }
 
             case EJECTING -> {
-                io.setFlywheelVoltage(4.0);
+                io.setFlywheelVoltage(-4.0);
                 io.setKickerVoltage(5.0);
             }
         }
