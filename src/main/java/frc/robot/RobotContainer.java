@@ -212,7 +212,7 @@ public class RobotContainer {
         );
 
         // Aim and shoot when left trigger is held
-        controller.leftTrigger().whileTrue(
+        controller.rightTrigger().whileTrue(
             ShootingCommands.aimAndShoot(
                 drive, 
                 shooter, 
@@ -228,7 +228,7 @@ public class RobotContainer {
         
 
         // Panic Button: Eject everything when left bumper is held
-        controller.start().whileTrue(
+        controller.leftBumper().whileTrue(
             Commands.parallel(
                 intake.eject(),
                 shooter.eject()

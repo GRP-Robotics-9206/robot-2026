@@ -52,8 +52,8 @@ public class ShootingCommands {
                     angleController
                 );
 
-                drive.runVelocity(aimSpeeds);
-                shooter.shoot(shotData.velocity());
+                //drive.runVelocity(aimSpeeds);
+                CommandScheduler.getInstance().schedule(shooter.shoot(shotData.velocity()));
             },
             drive, shooter
         )

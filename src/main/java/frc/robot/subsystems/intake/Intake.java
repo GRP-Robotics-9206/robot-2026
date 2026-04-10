@@ -1,4 +1,4 @@
-package frc.robot.subsystems.intake;
+  package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -31,8 +31,8 @@ public class Intake extends SubsystemBase {
 
         switch (state) {
             case IDLE -> io.setRollerVoltage(0.0);
-            case INTAKING -> io.setRollerVoltage(8.0);
-            case EJECTING -> io.setRollerVoltage(-8.0);
+            case INTAKING -> io.setRollerVoltage(-5.0);
+            case EJECTING -> io.setRollerVoltage(5.0);
         }
     }
 
