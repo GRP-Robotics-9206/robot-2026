@@ -77,6 +77,11 @@ public class ShootingCommands {
         ).withName("AutoShoot");
     }
 
+    public static Command pass(Shooter shooter) {
+        final double PASS_VELOCITY = 300.0; 
+        return shooter.shoot(PASS_VELOCITY).finallyDo(() -> shooter.stop().schedule());
+    }
+
     public static Command enableSOTM(Drive drive) {
         return Commands.runOnce(() -> drive.setSOTM(true)).withName("EnableSOTM");
     }
