@@ -88,6 +88,14 @@ public class Shooter extends SubsystemBase {
                .finallyDo(() -> this.state = ShooterState.IDLE);
     }
 
+    public void setTargetVelocity(double velocity) {
+        this.targetVelocity = velocity;
+        
+        if (state == ShooterState.IDLE && velocity > 0.1) {
+            state = ShooterState.SPOOLING;
+        }
+    }
+
     private void runFlywheel(double velocity) {
         double ff = controller.getParams().getSimpleFeedforward().calculate(velocity);
         double pid = controller.calculate(inputs.flywheelVelocityRadPerSec, velocity);

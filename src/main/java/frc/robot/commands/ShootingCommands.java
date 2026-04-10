@@ -54,7 +54,7 @@ public class ShootingCommands {
                 );
 
                 //drive.runVelocity(aimSpeeds);
-                CommandScheduler.getInstance().schedule(shooter.shoot(shotData.velocity()));
+                shooter.setTargetVelocity(shotData.velocity());
             },
             drive, shooter
         )
@@ -72,7 +72,7 @@ public class ShootingCommands {
                     drive.getPose(), 
                     drive.getFieldRelativeSpeeds()
                 );
-                CommandScheduler.getInstance().schedule(shooter.shoot(shotData.velocity()));
+                shooter.setTargetVelocity(shotData.velocity());
             },
             shooter
         ).withName("AutoShoot");
