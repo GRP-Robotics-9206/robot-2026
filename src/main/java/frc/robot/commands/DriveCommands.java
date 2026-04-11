@@ -72,10 +72,12 @@ public class DriveCommands {
         Drive drive,
         DoubleSupplier xSupplier,
         DoubleSupplier ySupplier,
-        DoubleSupplier omegaSupplier
+        DoubleSupplier omegaSupplier,
+        DoubleSupplier speedMultiplier
     ) {
         return Commands.run(
             () -> {
+                double multiplier = MathUtil.clamp(speedMultiplier.getAsDouble(), 0.0, 1.0);
                 // Get linear velocity
                 Translation2d linearVelocity =
                     getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
@@ -89,8 +91,8 @@ public class DriveCommands {
                 // Convert to field relative speeds & send command
                 ChassisSpeeds speeds =
                     new ChassisSpeeds(
-                        linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                        linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                        linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec() * multiplier,
+                        linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec() * multiplier,
                         omega * drive.getMaxAngularSpeedRadPerSec()
                     );
                 boolean isFlipped = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red;
@@ -308,7 +310,8 @@ public class DriveCommands {
         DoubleSupplier xSupplier,
         DoubleSupplier ySupplier,
         Translation2d aimPoint,
-        ProfiledPIDController angleController
+        ProfiledPIDController angleController,
+        double speedMultiplier
     ) {
         Translation2d linearVelocity = getLinearVelocityFromJoysticks(
             xSupplier.getAsDouble(), 
@@ -325,8 +328,8 @@ public class DriveCommands {
         );
 
         ChassisSpeeds fieldSpeeds = new ChassisSpeeds(
-            linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-            linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+            linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec() * speedMultiplier,
+            linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec() * speedMultiplier,
             omega
         );
 

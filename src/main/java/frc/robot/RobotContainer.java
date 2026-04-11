@@ -76,6 +76,7 @@ public class RobotContainer {
 
     // Controller
     private final CommandXboxController controller = new CommandXboxController(0);
+    private final CommandXboxController operatorController = new CommandXboxController(1);
 
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
@@ -195,7 +196,19 @@ public class RobotContainer {
                 drive,
                 () -> -controller.getLeftY(),
                 () -> -controller.getLeftX(),
-                () -> -controller.getRightX()
+                () -> -controller.getRightX(),
+                () -> 1.0
+            )
+        );
+        
+        // Percision drive when left bumper is held
+        controller.leftBumper().whileTrue(
+            DriveCommands.joystickDrive(
+                drive,
+                () -> -controller.getLeftY(),
+                () -> -controller.getLeftX(),
+                () -> -controller.getRightX(),
+                () -> 0.5
             )
         );
 
@@ -212,7 +225,7 @@ public class RobotContainer {
         );
 
         // Aim and shoot when left trigger is held
-        controller.rightTrigger().whileTrue(
+        operatorController.rightTrigger().whileTrue(
             ShootingCommands.aimAndShoot(
                 drive, 
                 shooter, 
@@ -220,19 +233,29 @@ public class RobotContainer {
                 () -> -controller.getLeftX()
             )
         );
-        
+
+        // Pass when right trigger is held
+        operatorController.leftTrigger().whileTrue(
+            ShootingCommands.passToAllianceZone(drive, shooter)
+        );
+
+        // Shoot without aiming when B button is held
+        operatorController.b().whileTrue(
+            ShootingCommands.shootStationary(drive, shooter)
+        ).whileFalse(shooter.stop());
+
         // Intake when right bumper is held     
-        controller.rightBumper().whileTrue(
+        operatorController.rightBumper().whileTrue(
             intake.intake()
         ).whileFalse(intake.stop());
 
-        // Passing
-        controller.leftTrigger().whileTrue(
-            ShootingCommands.pass(shooter)
+        // Hub shoot / Test shot when A button is held
+        operatorController.a().whileTrue(
+            ShootingCommands.hubShoot(shooter)
         ).onFalse(shooter.stop());
 
         // Panic Button: Eject everything when left bumper is held
-        controller.leftBumper().whileTrue(
+        operatorController.leftBumper().whileTrue(
             Commands.parallel(
                 intake.eject(),
                 shooter.eject()
