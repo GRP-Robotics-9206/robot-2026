@@ -29,6 +29,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "shoot ls"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "AutoShoot"

@@ -8,72 +8,30 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.775,
-        "y": 1.9200473122890613
+        "x": 7.759943721064815,
+        "y": 2.1263896122685186
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.077871198568873,
-        "y": 2.907334525939177
+        "x": 4.594104311342593,
+        "y": 0.5645308883101858
       },
       "prevControl": {
-        "x": 3.3050268336314845,
-        "y": 2.582826475849731
+        "x": 6.180370153356482,
+        "y": 0.20229513888888956
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5601390067911719,
-      "rotationDegrees": 45.0
-    }
-  ],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.39625553474114467,
-      "maxWaypointRelativePos": 0.7960660762942778,
-      "constraints": {
-        "maxVelocity": 2.0,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "rotationTargets": [],
+  "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Spool",
-      "waypointRelativePos": 0.3253446691176472,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "AutoSpool"
-        }
-      }
-    },
-    {
-      "name": "lock",
-      "waypointRelativePos": 0.6915900735294122,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "EnableSOTM"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -83,8 +41,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 50.50949762711718
+    "velocity": 4.0,
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "Right Trench Swipe",

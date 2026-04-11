@@ -1,0 +1,80 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.594,
+        "y": 0.565
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.526978877314815,
+        "y": 0.4993140190972223
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.0122999855324077,
+        "y": 2.5379644820601857
+      },
+      "prevControl": {
+        "x": 3.563261364292457,
+        "y": 1.8392503867593124
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.39625553474114467,
+      "maxWaypointRelativePos": 0.7960660762942778,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "lock",
+      "waypointRelativePos": 0.6915900735294122,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "EnableSOTM"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 46.0
+  },
+  "reversed": false,
+  "folder": "Right Trench Swipe",
+  "idealStartingState": {
+    "velocity": 40.0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": true
+}

@@ -64,6 +64,73 @@
               }
             ]
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2nd swipe rs"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "trench rs"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "turn rs"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "swipe rs"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "return rs"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot rs"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoShoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopShooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DisableSOTM"
+                }
+              }
+            ]
+          }
         }
       ]
     }
