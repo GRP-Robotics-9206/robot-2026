@@ -15,7 +15,7 @@ public class FieldConstants {
     public static final Distance ALLIANCE_ZONE = Inches.of(156.06);
 
     public static class Hub {
-        public static final Distance X_OFFSET = Inches.of(181.56);
+        public static final Distance X_OFFSET = Inches.of(169.56);
         public static final Distance TARGET_HEIGHT = Inches.of(56.4);
         
         public static final Translation3d BLUE_HUB = 

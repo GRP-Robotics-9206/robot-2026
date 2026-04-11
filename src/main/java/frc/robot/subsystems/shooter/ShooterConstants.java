@@ -9,7 +9,7 @@ public class ShooterConstants {
     public static final double gearRatio = 1.363;
 
     public static final ControlConstants constants = new ControlConstants()
-        .withPID(0.02, 0.0, 0.0016)
+        .withPID(0.074, 0.0, 0.0016)
         .withFeedforward(0.0154, 0.0)
         .withPhysical(0.2, 0.0)
         .withTolerance(4.0);   

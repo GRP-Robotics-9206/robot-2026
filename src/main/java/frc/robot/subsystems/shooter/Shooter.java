@@ -64,7 +64,7 @@ public class Shooter extends SubsystemBase {
 
             case EJECTING -> {
                 io.setFlywheelVoltage(-4.0);
-                io.setKickerVoltage(5.0);
+                io.setKickerVoltage(10.0);
             }
         }
     }
