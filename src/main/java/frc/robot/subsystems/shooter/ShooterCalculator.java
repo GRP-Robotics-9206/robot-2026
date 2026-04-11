@@ -24,9 +24,9 @@ public class ShooterCalculator {
     private static final double DIST_MAX = 8.5; // Max
 
     private static final LoggedTunableNumber vel1 = new LoggedTunableNumber("Shooter/Vel1", 450.0);
-    private static final LoggedTunableNumber vel2 = new LoggedTunableNumber("Shooter/Vel2", 490.0);
-    private static final LoggedTunableNumber vel3 = new LoggedTunableNumber("Shooter/Vel3", 535.0);
-    private static final LoggedTunableNumber vel4 = new LoggedTunableNumber("Shooter/Vel4", 610.0);
+    private static final LoggedTunableNumber vel2 = new LoggedTunableNumber("Shooter/Vel2", 510.0);
+    private static final LoggedTunableNumber vel3 = new LoggedTunableNumber("Shooter/Vel3", 545.0);
+    private static final LoggedTunableNumber vel4 = new LoggedTunableNumber("Shooter/Vel4", 630.0);
     private static final LoggedTunableNumber vel5 = new LoggedTunableNumber("Shooter/Vel5", 690.0);
     private static final LoggedTunableNumber velMax = new LoggedTunableNumber("Shooter/VelMax", 800.0);
 

@@ -17,7 +17,7 @@ public class ShooterIOSpark implements ShooterIO {
     public ShooterIOSpark() {
         SparkMaxConfig fwConfig = new SparkMaxConfig();
         fwConfig.encoder.velocityConversionFactor(motorRotationsRadPerSec * gearRatio);
-        fwConfig.smartCurrentLimit(80, 60);
+        fwConfig.smartCurrentLimit(80, 50);
         fwConfig.voltageCompensation(12.0);
         fwConfig.inverted(true);
 
