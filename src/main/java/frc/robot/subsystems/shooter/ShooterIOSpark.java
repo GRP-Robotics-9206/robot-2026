@@ -22,7 +22,7 @@ public class ShooterIOSpark implements ShooterIO {
         fwConfig.inverted(true);
 
         SparkMaxConfig kickerConfig = new SparkMaxConfig();
-        kickerConfig.smartCurrentLimit(40);
+        kickerConfig.smartCurrentLimit(60, 35);
 
         flywheelSpark = new SparkMax(flywheelCanID, MotorType.kBrushless);
         flywheelSpark.configure(fwConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
