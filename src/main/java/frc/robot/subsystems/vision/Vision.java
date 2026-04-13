@@ -100,7 +100,7 @@ public class Vision extends SubsystemBase {
             for (var observation : inputs[cameraIndex].poseObservations) {
                 // Check whether to reject pose
                 boolean rejectPose =
-                    observation.tagCount() == 0 // Must have at least one tag
+                    (observation.tagCount() == 0 && observation.type() != PoseObservationType.QUESTNAV) // Must have at least one tag
                         || (observation.tagCount() == 1
                         && observation.ambiguity() > maxAmbiguity) // Cannot be high ambiguity
                         || Math.abs(observation.pose().getZ())
@@ -126,9 +126,23 @@ public class Vision extends SubsystemBase {
                 }
 
                 // Calculate standard deviations
-                double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
-                double linearStdDev = linearStdDevBaseline * stdDevFactor;
-                double angularStdDev = angularStdDevBaseline * stdDevFactor;
+                double linearStdDev;
+                double angularStdDev;
+
+                if (observation.type() == PoseObservationType.QUESTNAV) {
+                    linearStdDev = linearStdDevBaseline;
+                    angularStdDev = angularStdDevBaseline;
+                } else {
+                    double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
+                
+                    linearStdDev = linearStdDevBaseline * stdDevFactor;
+                    angularStdDev = angularStdDevBaseline * stdDevFactor;
+
+                    if (observation.type() == PoseObservationType.MEGATAG_2) {
+                        linearStdDev *= linearStdDevMegatag2Factor;
+                        angularStdDev *= angularStdDevMegatag2Factor;
+                    }
+                }
 
                 if (observation.type() == PoseObservationType.MEGATAG_2) {
                     linearStdDev *= linearStdDevMegatag2Factor;
@@ -180,6 +194,14 @@ public class Vision extends SubsystemBase {
         Logger.recordOutput("Vision/Summary/RobotPoses", allRobotPoses.toArray(new Pose3d[0]));
         Logger.recordOutput("Vision/Summary/RobotPosesAccepted", allRobotPosesAccepted.toArray(new Pose3d[0]));
         Logger.recordOutput("Vision/Summary/RobotPosesRejected", allRobotPosesRejected.toArray(new Pose3d[0]));
+    }
+
+    public void setQuestPose(Pose3d robotPose) {
+        for (VisionIO io : io) {
+            if (io instanceof VisionIOQuestNav) {
+                io.setPose(robotPose);
+            }
+        }
     }
 
     @FunctionalInterface
