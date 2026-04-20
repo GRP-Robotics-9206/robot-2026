@@ -2,18 +2,27 @@ package frc.robot.subsystems.shooter;
 
 import frc.robot.util.TunableControls.TunableControlConstants;
 import frc.robot.util.TunableControls.TunablePIDController;
+import edu.wpi.first.hal.SimDevice.Direction;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.subsystems.shooter.ShooterConstants.*;
 
 public class Shooter extends SubsystemBase {
     private final ShooterIO io;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
-    private final TunablePIDController controller;
+    private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV, kA);
+    private final PIDController pid = new PIDController(kP, kI, kD);
+    private final SysIdRoutine sysIdRoutine;
+    //private final TunablePIDController controller;
 
     @AutoLogOutput(key = "Shooter/State")
     private ShooterState state = ShooterState.IDLE;
@@ -24,11 +33,23 @@ public class Shooter extends SubsystemBase {
     public Shooter(ShooterIO io) {
         this.io = io;
 
+        /*
         this.controller = new TunablePIDController(
             new TunableControlConstants("Shooter", constants)
         );
+        */
+
+        sysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> io.setFlywheelVoltage(voltage.in(Volts)),
+                null,
+                this
+            )
+        );
     }
 
+     
     public ShooterState getState() {
         return state;
     }
@@ -88,6 +109,14 @@ public class Shooter extends SubsystemBase {
                .finallyDo(() -> this.state = ShooterState.IDLE);
     }
 
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.quasistatic(direction);
+    }
+
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.dynamic(direction);
+    }
+
     public void setTargetVelocity(double velocity) {
         this.targetVelocity = velocity;
         
@@ -97,9 +126,9 @@ public class Shooter extends SubsystemBase {
     }
 
     private void runFlywheel(double velocity) {
-        double ff = controller.getParams().getSimpleFeedforward().calculate(velocity);
-        double pid = controller.calculate(inputs.flywheelVelocityRadPerSec, velocity);
-        io.setFlywheelVoltage(ff + pid);
+        double ff = feedforward.calculate(velocity);
+        double feedback = pid.calculate(inputs.flywheelVelocityRadPerSec, velocity);
+        io.setFlywheelVoltage(ff + feedback);
     }
 
     public enum ShooterState {

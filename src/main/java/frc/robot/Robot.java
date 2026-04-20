@@ -34,6 +34,7 @@ import org.littletonrobotics.urcl.URCL;
 public class Robot extends LoggedRobot {
     private Command autonomousCommand;
     private final RobotContainer robotContainer;
+    private boolean hasSetupSysIdDash = false;
 
     public Robot() {
         // Record metadata
@@ -170,6 +171,10 @@ public class Robot extends LoggedRobot {
     public void testInit() {
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
+            if (!hasSetupSysIdDash) {
+                robotContainer.setupSysIdDash();
+                hasSetupSysIdDash = true;
+            }
     }
 
     /**

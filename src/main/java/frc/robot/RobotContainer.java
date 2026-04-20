@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootingCommands;
 import frc.robot.subsystems.drive.Drive;
@@ -307,6 +308,13 @@ public class RobotContainer {
         SmartDashboard.putBoolean("Shifts/Shift Active", HubShiftUtil.getShiftedShiftInfo().active());
         SmartDashboard.putString("Shifts/Game State", HubShiftUtil.getShiftedShiftInfo().currentShift().toString());
         SmartDashboard.putBoolean("Shifts/Active First?",DriverStation.getAlliance().orElse(Alliance.Blue) == HubShiftUtil.getFirstActiveAlliance());
+    }
+
+    public void setupSysIdDash() {
+        SmartDashboard.putData("Shooter FW Quasi Fwd", shooter.sysIdDynamic(Direction.kForward));
+        SmartDashboard.putData("Shooter FW Quasi Rev", shooter.sysIdDynamic(Direction.kReverse));
+        SmartDashboard.putData("Shooter FW Dynamic Fwd", shooter.sysIdDynamic(Direction.kForward));
+        SmartDashboard.putData("Shooter FW Dynamic Rev", shooter.sysIdDynamic(Direction.kReverse));
     }
 
     /**
